@@ -4,6 +4,7 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
+import org.simpleframework.xml.convert.Convert;
 
 import java.util.List;
 
@@ -50,6 +51,7 @@ public class RssFeed {
         String link;
 
         @Element(name="description", required=false)
+        @Convert(DescriptionConverter.class)
         Description description;
 
         @Element(name="guid", required=false)
@@ -132,12 +134,19 @@ public class RssFeed {
 
     public static class Description {
 
-        @Element(name="#cdata-section", required=false)
-        String cdataSection;
+        String descriptionText;
+        String descriptionLink;
 
-        public String getCdataSection() {return this.cdataSection;}
-        public void setCdataSection(String value) {this.cdataSection = value;}
+        public Description(String descriptionText, String descriptionLink) {
+            this.descriptionText = descriptionText;
+            this.descriptionLink = descriptionLink;
+        }
 
+        public String getDescriptionText() {return this.descriptionText;}
+        public void setDescriptionText(String value) {this.descriptionText = value;}
+
+        public String getDescriptionLink() {return descriptionLink;}
+        public void setDescriptionLink(String descriptionLink) {this.descriptionLink = descriptionLink;}
     }
 
 }
