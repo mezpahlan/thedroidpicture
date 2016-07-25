@@ -1,4 +1,4 @@
-package uk.co.mezpahlan.thedroidpicture;
+package uk.co.mezpahlan.thedroidpicture.data;
 
 import org.simpleframework.xml.convert.Converter;
 import org.simpleframework.xml.stream.InputNode;
@@ -6,6 +6,8 @@ import org.simpleframework.xml.stream.OutputNode;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import uk.co.mezpahlan.thedroidpicture.data.model.RssFeed;
 
 /**
  * Created by mpahlan on 21/07/16.

@@ -1,4 +1,4 @@
-package uk.co.mezpahlan.thedroidpicture;
+package uk.co.mezpahlan.thedroidpicture.data;
 
 import org.simpleframework.xml.convert.AnnotationStrategy;
 import org.simpleframework.xml.core.Persister;

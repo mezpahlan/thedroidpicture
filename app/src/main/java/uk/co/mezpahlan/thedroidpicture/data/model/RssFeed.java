@@ -1,4 +1,4 @@
-package uk.co.mezpahlan.thedroidpicture;
+package uk.co.mezpahlan.thedroidpicture.data.model;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
@@ -7,6 +7,8 @@ import org.simpleframework.xml.Root;
 import org.simpleframework.xml.convert.Convert;
 
 import java.util.List;
+
+import uk.co.mezpahlan.thedroidpicture.data.DescriptionConverter;
 
 @Root(name="rss")
 public class RssFeed {
