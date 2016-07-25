@@ -1,4 +1,4 @@
-package uk.co.mezpahlan.thedroidpicture;
+package uk.co.mezpahlan.thedroidpicture.rss.feed;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -6,14 +6,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import uk.co.mezpahlan.thedroidpicture.R;
+
 /**
  * Created by mpahlan on 20/07/16.
  */
-public class RssViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     private ImageView image;
     private TextView description;
 
-    public RssViewHolder(View itemView) {
+    public FeedViewHolder(View itemView) {
         super(itemView);
 
         itemView.setOnClickListener(this);
