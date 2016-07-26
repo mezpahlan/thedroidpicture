@@ -44,8 +44,8 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedViewHolder
 
         Picasso.with(imageView.getContext())
                 .load(url)
-//                .placeholder(R.drawable.user_placeholder)
-//                .error(R.drawable.user_placeholder_error)
+                .placeholder(R.drawable.logo_boston_globe)
+                .error(R.drawable.logo_boston_globe)
                 .into(imageView);
 
         textView.setText(text);
