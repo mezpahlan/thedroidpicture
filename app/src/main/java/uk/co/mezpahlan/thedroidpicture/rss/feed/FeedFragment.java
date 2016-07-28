@@ -39,7 +39,6 @@ public class FeedFragment extends Fragment implements FeedMvp.View {
         super.onCreate(savedInstanceState);
 
         listAdapter = new FeedRecyclerViewAdapter(rssList);
-        // TODO: Create the presenter
     }
 
     @Override
