@@ -5,7 +5,8 @@ package uk.co.mezpahlan.thedroidpicture.base;
  */
 public interface BaseMvp {
 
-    interface View <T> {
+    interface LCEView <T> {
+
         void showLoading(boolean active);
 
         void showContent(T viewType);
@@ -13,10 +14,4 @@ public interface BaseMvp {
         void showError();
     }
 
-    interface ModelInteractor <T> {
-
-        void fetch();
-
-        void onFetched(T modelType);
-    }
 }
