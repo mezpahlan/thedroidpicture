@@ -1,6 +1,7 @@
 package uk.co.mezpahlan.thedroidpicture.rss.feed;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -16,6 +17,7 @@ import java.util.List;
 
 import uk.co.mezpahlan.thedroidpicture.R;
 import uk.co.mezpahlan.thedroidpicture.data.model.RssFeed;
+import uk.co.mezpahlan.thedroidpicture.rss.item.ItemActivity;
 
 /**
  * Created by mpahlan on 24/07/16.
@@ -103,6 +105,11 @@ public class FeedFragment extends Fragment implements FeedMvp.View {
 
     @Override
     public void showRssItem(String rssItemLink) {
-        // Move to a different activity?
+        // Naive implementation using an intent to move between activities
+        // TODO: Think about using an event bus??
+        // TODO: Think about getContext() which is API 23
+        Intent intent = new Intent(getActivity(), ItemActivity.class);
+        intent.putExtra(ItemActivity.EXTRA_ITEM_URL, rssItemLink);
+        startActivity(intent);
     }
 }

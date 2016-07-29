@@ -12,13 +12,17 @@ import uk.co.mezpahlan.thedroidpicture.R;
  * Created by mpahlan on 27/07/16.
  */
 public class ItemActivity extends AppCompatActivity {
+    public static final String EXTRA_ITEM_URL = "ITEM_URL";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Get the requested RSS Item
+        String itemUrl = getIntent().getStringExtra(EXTRA_ITEM_URL);
+
         if (null == savedInstanceState) {
-            initFragment(ItemFragment.newInstance());
+            initFragment(ItemFragment.newInstance(itemUrl));
         }
     }
 
