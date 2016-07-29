@@ -33,4 +33,5 @@ dependencies {
         exclude group: 'stax', module: 'stax-api'
         exclude group: 'stax', module: 'stax'
     }
+    compile 'org.jsoup:jsoup:1.9.2'
 }
