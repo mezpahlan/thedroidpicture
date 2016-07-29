@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -17,7 +18,7 @@ import uk.co.mezpahlan.thedroidpicture.data.model.RssFeed;
 /**
  * Created by mpahlan on 20/07/16.
  */
-public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedViewHolder> {
+public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedRecyclerViewAdapter.FeedViewHolder> {
 
     private List<RssFeed.Item> itemList;
 
@@ -56,6 +57,32 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedViewHolder
             return itemList.size();
         } else {
             return 0;
+        }
+    }
+
+    public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private ImageView image;
+        private TextView description;
+
+        public FeedViewHolder(View itemView) {
+            super(itemView);
+
+            itemView.setOnClickListener(this);
+            image = (ImageView) itemView.findViewById(R.id.rss_image);
+            description = (TextView) itemView.findViewById(R.id.rss_description);
+        }
+
+        @Override
+        public void onClick(View v) {
+            Toast.makeText(v.getContext(), "Clicked Position = " + getAdapterPosition(), Toast.LENGTH_SHORT).show();
+        }
+
+        public ImageView getImage() {
+            return image;
+        }
+
+        public TextView getDescription() {
+            return description;
         }
     }
 }
