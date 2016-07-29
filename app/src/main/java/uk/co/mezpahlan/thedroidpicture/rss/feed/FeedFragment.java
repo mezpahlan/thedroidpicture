@@ -48,7 +48,6 @@ public class FeedFragment extends Fragment implements FeedMvp.View {
         presenter.load(false);
     }
 
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
