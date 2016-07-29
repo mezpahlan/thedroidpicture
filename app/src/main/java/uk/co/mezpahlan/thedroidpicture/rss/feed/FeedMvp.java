@@ -12,7 +12,7 @@ import uk.co.mezpahlan.thedroidpicture.data.model.RssFeed;
  */
 public interface FeedMvp {
 
-    interface View extends BaseMvp.View <List<RssFeed.Item>> {
+    interface View extends BaseMvp.LCEView <List<RssFeed.Item>> {
 
         // Only what the view is concerned with........ typically showing things?
         void showRssItem(String rssItemLink);
@@ -31,7 +31,13 @@ public interface FeedMvp {
 
     }
 
-    interface ModelInteractor extends BaseMvp.ModelInteractor <RssFeed> {
+    interface ModelInteractor {
 
+        void fetch();
+
+        void onFetched(RssFeed rssFeed);
+
+        void onError();
     }
+
 }
