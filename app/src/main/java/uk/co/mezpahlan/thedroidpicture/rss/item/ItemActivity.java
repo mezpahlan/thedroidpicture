@@ -17,6 +17,7 @@ public class ItemActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_rss_item);
 
         // Get the requested RSS Item
         String itemUrl = getIntent().getStringExtra(EXTRA_ITEM_URL);
