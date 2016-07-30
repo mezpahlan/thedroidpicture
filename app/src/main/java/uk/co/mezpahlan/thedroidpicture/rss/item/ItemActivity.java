@@ -27,10 +27,10 @@ public class ItemActivity extends AppCompatActivity {
     }
 
     private void initFragment(Fragment itemFragment) {
-        // Add the FeedFragment to the layout
+        // Add the ItemFragment to the layout
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.add(R.id.feedContentFrame, itemFragment);
+        transaction.add(R.id.itemContentFrame, itemFragment);
         transaction.commit();
     }
 }
