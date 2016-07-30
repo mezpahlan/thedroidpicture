@@ -32,10 +32,12 @@ public class RssItem {
         private String imageLink;
         private String description;
 
-        public String getImageLink() {return this.imageLink;}
-        public void setImageLink(String value) {this.imageLink = value;}
+        public Photo(String imageLink, String description) {
+            this.imageLink = imageLink;
+            this.description = description;
+        }
 
+        public String getImageLink() {return this.imageLink;}
         public String getDescription() {return this.description;}
-        public void setDescription(String value) {this.description = value;}
     }
 }
