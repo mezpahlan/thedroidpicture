@@ -9,21 +9,18 @@ public class RssItem {
     private String headline;
     private String teaseText;
     private String byline;
-    private String date;
     private List<Photo> photos;
 
-    public RssItem(String headline, String teaseText, String byline, String date, List<Photo> photos) {
+    public RssItem(String headline, String teaseText, String byline, List<Photo> photos) {
         this.headline = headline;
         this.teaseText = teaseText;
         this.byline = byline;
-        this.date = date;
         this.photos = photos;
     }
 
     public String getHeadline() { return headline; }
     public String getTeaseText() { return teaseText; }
     public String getByline() { return byline; }
-    public String getDate() { return date; }
     public List<Photo> getPhotos() { return photos; }
 
     public static class Photo {
