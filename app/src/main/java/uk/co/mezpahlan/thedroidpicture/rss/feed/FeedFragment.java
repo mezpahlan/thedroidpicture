@@ -40,7 +40,7 @@ public class FeedFragment extends Fragment implements FeedMvp.View {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        listAdapter = new FeedRecyclerViewAdapter(rssList);
+        listAdapter = new FeedRecyclerViewAdapter(rssList, rssFeedItemClickListener);
     }
 
     @Override
@@ -111,5 +111,19 @@ public class FeedFragment extends Fragment implements FeedMvp.View {
         Intent intent = new Intent(getActivity(), ItemActivity.class);
         intent.putExtra(ItemActivity.EXTRA_ITEM_URL, rssItemLink);
         startActivity(intent);
+    }
+
+    /**
+     * Listener for clicks on items in the RecyclerView.
+     */
+    RssFeedItemClickListener rssFeedItemClickListener = new RssFeedItemClickListener() {
+        @Override
+        public void onRssFeedItemClick(RssFeed.Item rssFeedItem) {
+            presenter.onSelectRssItem(rssFeedItem);
+        }
+    };
+
+    public interface RssFeedItemClickListener {
+        void onRssFeedItemClick(RssFeed.Item rssFeedItem);
     }
 }

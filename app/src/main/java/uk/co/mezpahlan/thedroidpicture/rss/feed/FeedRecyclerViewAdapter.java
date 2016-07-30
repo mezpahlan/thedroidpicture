@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -21,15 +20,17 @@ import uk.co.mezpahlan.thedroidpicture.data.model.RssFeed;
 public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedRecyclerViewAdapter.FeedViewHolder> {
 
     private List<RssFeed.Item> itemList;
+    private FeedFragment.RssFeedItemClickListener rssFeedItemClickListener;
 
-    public FeedRecyclerViewAdapter(List<RssFeed.Item> itemList) {
+    public FeedRecyclerViewAdapter(List<RssFeed.Item> itemList, FeedFragment.RssFeedItemClickListener rssFeedItemClickListener) {
         this.itemList = itemList;
+        this.rssFeedItemClickListener = rssFeedItemClickListener;
     }
 
     @Override
     public FeedViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.rss_list, null);
-        return new FeedViewHolder(layoutView);
+        return new FeedViewHolder(layoutView, rssFeedItemClickListener);
     }
 
     @Override
@@ -60,12 +61,18 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedRecyclerVi
         }
     }
 
+    public RssFeed.Item getRssFeedItemWithPosition(int position) {
+        return itemList.get(position);
+    }
+
     public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private FeedFragment.RssFeedItemClickListener rssFeedItemClickListener;
         private ImageView image;
         private TextView description;
 
-        public FeedViewHolder(View itemView) {
+        public FeedViewHolder(View itemView, FeedFragment.RssFeedItemClickListener rssFeedItemClickListener) {
             super(itemView);
+            this.rssFeedItemClickListener = rssFeedItemClickListener;
 
             itemView.setOnClickListener(this);
             image = (ImageView) itemView.findViewById(R.id.rss_image);
@@ -74,7 +81,9 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedRecyclerVi
 
         @Override
         public void onClick(View v) {
-            Toast.makeText(v.getContext(), "Clicked Position = " + getAdapterPosition(), Toast.LENGTH_SHORT).show();
+            int position = getAdapterPosition();
+            RssFeed.Item rssFeedItem = getRssFeedItemWithPosition(position);
+            rssFeedItemClickListener.onRssFeedItemClick(rssFeedItem);
         }
 
         public ImageView getImage() {
