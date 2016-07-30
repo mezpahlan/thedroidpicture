@@ -4,6 +4,11 @@ import android.util.Log;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -33,7 +38,11 @@ public class ItemModelInteractor implements ItemMvp.ModelInteractor {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    onFetched(convertHtmlToRssItem(response.body()));
+                    try {
+                        onFetched(convertHtmlToRssItem(response.body()));
+                    } catch (IOException e) {
+                        onFailure(call, e);
+                    }
                 } else {
                     // We just want the error. Don't do any conversions here.
                     onError();
@@ -59,8 +68,30 @@ public class ItemModelInteractor implements ItemMvp.ModelInteractor {
         Log.e("Mez", "Something went wrong in the ItemModelInteractor");
     }
 
-    private RssItem convertHtmlToRssItem(ResponseBody body) {
-        Document doc = Jsoup.parse(body.toString());
-        return null;
+    private RssItem convertHtmlToRssItem(ResponseBody body) throws IOException {
+        // TODO: body.string() or body.charStream() or a custom converter??
+        Document doc = Jsoup.parse(body.string());
+        Element headline = doc.select(".pictureInfo-headline").first();
+        Element teaseText = doc.select(".subhead").first();
+        Element byLine = doc.select(".byname").first();
+        List<Element> photoLinks = doc.select("div.photo img");
+        List<Element> captions = doc.select("article.pcaption div.gcaption");
+
+        // The page markup doesn't have sane groupings for photo links and photo captions
+        // Instead they are next to one another so we have to assume adjacent elements are related.
+        // Check that we have the same number of photoLinks and captions
+        List<RssItem.Photo> photoList;
+        if (photoLinks.size() == captions.size()) {
+            photoList = new ArrayList<>(0);
+            for (int i = 0; i < photoLinks.size(); i++) {
+                photoList.add(new RssItem.Photo("https:" + photoLinks.get(i).attr("src"), captions.get(i).ownText()));
+            }
+        } else {
+            // TODO: Throw error because we haven't matched links to captions.
+            onError();
+            return null;
+        }
+
+        return new RssItem(headline.ownText(), teaseText.ownText(), byLine.ownText(), photoList);
     }
 }
