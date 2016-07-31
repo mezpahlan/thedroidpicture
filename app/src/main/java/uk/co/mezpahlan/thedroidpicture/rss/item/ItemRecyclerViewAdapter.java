@@ -42,6 +42,7 @@ public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerVi
 
         Picasso.with(imageView.getContext())
                 .load(imageLink)
+                .fit()
                 .placeholder(R.drawable.logo_boston_globe)
                 .error(R.drawable.logo_boston_globe)
                 .into(imageView);
