@@ -35,7 +35,6 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedRecyclerVi
 
     @Override
     public void onBindViewHolder(FeedViewHolder holder, int position) {
-        // TODO: Should picasso be called from here?
         final ImageView imageView = holder.getImage();
         final TextView textView = holder.getDescription();
         final RssFeed.Description rssItemDescription = itemList.get(position).getDescription();
