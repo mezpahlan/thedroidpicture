@@ -6,8 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,7 +67,7 @@ public class FeedFragment extends Fragment implements FeedMvp.View {
         recyclerView.setAdapter(listAdapter);
 
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, 1));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         // Pull-to-refresh
         SwipeRefreshLayout swipeRefreshLayout =
