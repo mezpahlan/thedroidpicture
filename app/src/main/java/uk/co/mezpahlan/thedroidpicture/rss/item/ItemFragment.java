@@ -20,6 +20,7 @@ import uk.co.mezpahlan.thedroidpicture.data.model.RssItem;
  */
 public class ItemFragment extends Fragment implements ItemMvp.View {
 
+    public static final String ARGUMENT_ITEM_TITLE = "ITEM_TITLE";
     public static final String ARGUMENT_ITEM_URL = "ITEM_URL";
     private ItemRecyclerViewAdapter listAdapter;
     private ItemMvp.Presenter presenter;
@@ -29,8 +30,9 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
         // Required empty constructor
     }
 
-    public static ItemFragment newInstance(String itemUrl) {
+    public static ItemFragment newInstance(String itemTitle, String itemUrl) {
         Bundle arguments = new Bundle();
+        arguments.putString(ARGUMENT_ITEM_TITLE, itemTitle);
         arguments.putString(ARGUMENT_ITEM_URL, itemUrl);
         ItemFragment fragment = new ItemFragment();
         fragment.setArguments(arguments);
@@ -80,6 +82,7 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
 
     @Override
     public void showContent(List<RssItem.Photo> itemPhotos) {
+        setTitle(getArguments().getString(ARGUMENT_ITEM_TITLE));
         photosList.addAll(itemPhotos);
         listAdapter.notifyDataSetChanged();
     }
@@ -87,6 +90,11 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
     @Override
     public void showError() {
 
+    }
+
+    @Override
+    public void setTitle(String title) {
+        getActivity().setTitle(title);
     }
 
 }

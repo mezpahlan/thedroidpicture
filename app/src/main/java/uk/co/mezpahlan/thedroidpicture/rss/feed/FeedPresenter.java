@@ -41,7 +41,7 @@ public class FeedPresenter implements FeedMvp.Presenter {
     @Override
     public void onSelectRssItem(@NonNull RssFeed.Item rssItem) {
         checkNotNull(rssItem, "rssItem cannot be null");
-        rssView.showRssItem(rssItem.getLink());
+        rssView.showRssItem(rssItem.getTitle(), rssItem.getLink());
     }
 
 }
