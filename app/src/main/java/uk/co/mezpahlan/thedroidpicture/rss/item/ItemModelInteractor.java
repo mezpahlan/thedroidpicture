@@ -71,9 +71,10 @@ public class ItemModelInteractor implements ItemMvp.ModelInteractor {
     private RssItem convertHtmlToRssItem(ResponseBody body) throws IOException {
         // TODO: body.string() or body.charStream() or a custom converter??
         Document doc = Jsoup.parse(body.string());
-        Element headline = doc.select(".pictureInfo-headline").first();
-        Element teaseText = doc.select(".subhead").first();
-        Element byLine = doc.select(".byname").first();
+        String headline = doc.select(".pictureInfo-headline").size() > 0 ? doc.select(".pictureInfo-headline").first().ownText() :
+                "";
+        String teaseText = doc.select(".subhead").size() > 0 ? doc.select(".subhead").first().ownText() : "";
+        String byLine = doc.select(".byname").size() > 0 ? doc.select(".byname").first().ownText() : "";
         List<Element> photoLinks = doc.select("div.photo img");
         List<Element> captions = doc.select("article.pcaption div.gcaption");
 
@@ -92,6 +93,6 @@ public class ItemModelInteractor implements ItemMvp.ModelInteractor {
             return null;
         }
 
-        return new RssItem(headline.ownText(), teaseText.ownText(), byLine.ownText(), photoList);
+        return new RssItem(headline, teaseText, byLine, photoList);
     }
 }
