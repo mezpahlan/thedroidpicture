@@ -97,4 +97,9 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
         getActivity().setTitle(title);
     }
 
+    @Override
+    public void showExpandedPicture() {
+
+    }
+
 }
