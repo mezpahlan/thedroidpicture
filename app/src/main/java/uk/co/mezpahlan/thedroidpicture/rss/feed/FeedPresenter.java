@@ -43,5 +43,4 @@ public class FeedPresenter implements FeedMvp.Presenter {
         checkNotNull(rssItem, "rssItem cannot be null");
         rssView.showRssItem(rssItem.getTitle(), rssItem.getLink());
     }
-
 }
