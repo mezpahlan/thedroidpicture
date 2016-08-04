@@ -26,11 +26,18 @@ public class DescriptionConverter implements Converter<RssFeed.Description> {
         Matcher matcher = imageLinkPattern.matcher(nodeText);
 
         String link = null;
+        int startIndex = 0;
         while (matcher.find()) {
             link = matcher.group(1);
+            startIndex = matcher.start(1);
         }
 
-        String text = nodeText.replaceFirst(IMG_SRC_REG_EX, "")
+        // Remove everything after the link because that represents the actual
+        // image description rather than the rss item description. We take
+        // substring - 9 which represents the start of the link we extracted
+        // moved backward to account for '<src img=' that our regex does not
+        // take into account.
+        String text = nodeText.substring(0, startIndex - 9)
                               .replaceAll(HTML_TAG_REG_EX, "");
 
         return new RssFeed.Description(text, link);
