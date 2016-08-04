@@ -20,7 +20,7 @@ public interface FeedMvp {
         void load(boolean isUserDrive);
         void onLoadSuccess(@NonNull List<RssFeed.Item> rssList);
         void onLoadError();
-        void onSelectPhoto(@NonNull RssFeed.Item rssItem);
+        void onSelectRssItem(@NonNull RssFeed.Item rssItem);
     }
 
     interface ModelInteractor {
