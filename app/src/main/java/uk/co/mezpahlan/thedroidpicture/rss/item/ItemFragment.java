@@ -3,6 +3,7 @@ package uk.co.mezpahlan.thedroidpicture.rss.item;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
@@ -23,8 +24,10 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
     public static final String ARGUMENT_ITEM_TITLE = "ITEM_TITLE";
     public static final String ARGUMENT_ITEM_URL = "ITEM_URL";
     private ItemRecyclerViewAdapter listAdapter;
+    private ItemViewPagerAdapter pagerAdapter;
     private ItemMvp.Presenter presenter;
     private List<RssItem.Photo> photosList = new ArrayList<>(0);
+    private ViewPager viewPager;
 
     public ItemFragment() {
         // Required empty constructor
@@ -43,7 +46,8 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        listAdapter = new ItemRecyclerViewAdapter(photosList);
+        listAdapter = new ItemRecyclerViewAdapter(photosList, photoClickListener);
+        pagerAdapter = new ItemViewPagerAdapter(photosList);
     }
 
     @Override
@@ -66,11 +70,17 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_rss_item, container, false);
+
+        // Set up recycler view
         RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.recycler_view);
         recyclerView.setAdapter(listAdapter);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+
+        // Set up view pager
+        viewPager = (ViewPager) root.findViewById(R.id.viewpager);
+        viewPager.setAdapter(pagerAdapter);
 
         return root;
     }
@@ -85,6 +95,7 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
         setTitle(getArguments().getString(ARGUMENT_ITEM_TITLE));
         photosList.addAll(itemPhotos);
         listAdapter.notifyDataSetChanged();
+        pagerAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -98,8 +109,21 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
     }
 
     @Override
-    public void showExpandedPicture() {
-
+    public void showExpandedPicture(int position) {
+        viewPager.setCurrentItem(position, false);
+        viewPager.setVisibility(View.VISIBLE);
     }
+    /**
+     * Listener for clicks on items in the RecyclerView.
+     */
+    PhotoClickListener photoClickListener = new PhotoClickListener() {
+        @Override
+        public void onItemClick(int position) {
+            presenter.onSelectPhoto(position);
+        }
+    };
 
+    public interface PhotoClickListener {
+        void onItemClick(int position);
+    }
 }

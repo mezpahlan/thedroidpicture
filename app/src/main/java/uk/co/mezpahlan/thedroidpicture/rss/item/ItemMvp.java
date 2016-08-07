@@ -13,7 +13,7 @@ import uk.co.mezpahlan.thedroidpicture.data.model.RssItem;
 public interface ItemMvp {
     interface View extends BaseMvp.LCEView<List<RssItem.Photo>> {
         void setTitle(String title);
-        void showExpandedPicture();
+        void showExpandedPicture(int position);
     }
 
     interface Presenter {
@@ -22,7 +22,7 @@ public interface ItemMvp {
         void load(String itemUrl);
         void onLoadSuccess(@NonNull List<RssItem.Photo> photos);
         void onLoadError();
-        void onSelectPhoto(@NonNull RssItem.Photo photo);
+        void onSelectPhoto(@NonNull int position);
     }
 
     interface ModelInteractor {

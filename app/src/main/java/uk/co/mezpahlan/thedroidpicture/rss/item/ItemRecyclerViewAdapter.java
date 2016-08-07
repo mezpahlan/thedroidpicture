@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -20,15 +19,17 @@ import uk.co.mezpahlan.thedroidpicture.data.model.RssItem;
  */
 public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerViewAdapter.ItemViewHolder> {
     private List<RssItem.Photo> itemList;
+    private final ItemFragment.PhotoClickListener photoClickListener;
 
-    public ItemRecyclerViewAdapter(List<RssItem.Photo> itemList) {
+    public ItemRecyclerViewAdapter(List<RssItem.Photo> itemList, ItemFragment.PhotoClickListener photoClickListener) {
         this.itemList = itemList;
+        this.photoClickListener = photoClickListener;
     }
 
     @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_rss_item, null);
-        return new ItemViewHolder(layoutView);
+        return new ItemViewHolder(layoutView, photoClickListener);
     }
 
     @Override
@@ -61,11 +62,13 @@ public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerVi
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private final ItemFragment.PhotoClickListener photoClickListener;
         private ImageView image;
         private TextView description;
 
-        public ItemViewHolder(View itemView) {
+        public ItemViewHolder(View itemView, ItemFragment.PhotoClickListener photoClickListener) {
             super(itemView);
+            this.photoClickListener = photoClickListener;
 
             itemView.setOnClickListener(this);
             image = (ImageView) itemView.findViewById(R.id.item_image);
@@ -74,7 +77,7 @@ public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerVi
 
         @Override
         public void onClick(View v) {
-            Toast.makeText(v.getContext(), "Clicked Position = " + getAdapterPosition(), Toast.LENGTH_SHORT).show();
+            photoClickListener.onItemClick(getLayoutPosition());
         }
 
         public ImageView getImage() {

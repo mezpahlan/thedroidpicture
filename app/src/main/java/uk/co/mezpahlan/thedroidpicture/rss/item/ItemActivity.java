@@ -6,6 +6,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import uk.co.mezpahlan.thedroidpicture.R;
 
@@ -28,6 +29,20 @@ public class ItemActivity extends AppCompatActivity {
 
         if (null == savedInstanceState) {
             initFragment(ItemFragment.newInstance(itemTitle, itemUrl));
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        // TODO: Move this to MVP??
+        FragmentManager fragmentManager = getFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentById(R.id.itemContentFrame);
+        View fullscreenViewPager = fragment.getView().findViewById(R.id.viewpager);
+
+        if (fullscreenViewPager != null && View.VISIBLE == fullscreenViewPager.getVisibility()) {
+            fullscreenViewPager.setVisibility(View.GONE);
+        } else {
+            super.onBackPressed();
         }
     }
 
