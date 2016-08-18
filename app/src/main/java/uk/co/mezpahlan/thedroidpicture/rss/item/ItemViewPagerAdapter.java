@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -30,14 +31,20 @@ public class ItemViewPagerAdapter extends PagerAdapter {
         ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.pager_fullscreen_photo, collection, false);
         collection.addView(layout);
 
+        final RssItem.Photo photo = photosList.get(position);
+
         ImageView fullscreenImageview = (ImageView) layout.findViewById(R.id.fullscreenImageView);
+        TextView textView = (TextView) layout.findViewById(R.id.fullscreenTextView);
 
         Picasso.with(fullscreenImageview.getContext())
-                .load(photosList.get(position).getImageLink())
+                .load(photo.getImageLink())
                 .fit()
+                .centerInside()
                 .placeholder(R.drawable.logo_boston_globe)
                 .error(R.drawable.logo_boston_globe)
                 .into(fullscreenImageview);
+
+        textView.setText(photo.getDescription());
 
         return layout;
     }
