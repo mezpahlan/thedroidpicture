@@ -24,6 +24,7 @@ public class FeedPresenter implements FeedMvp.Presenter {
     @Override
     public void load(boolean isUserDriven) {
         // TODO: Do we check for retained instances here?
+        rssView.showLoading(isUserDriven);
         modelInteractor.fetch();
     }
 

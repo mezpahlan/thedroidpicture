@@ -28,6 +28,9 @@ public class FeedFragment extends Fragment implements FeedMvp.View {
     private FeedMvp.Presenter presenter;
     private List<RssFeed.Item> rssList = new ArrayList<>(0);
 
+    private View loadingView;
+    private View contentView;
+
     public FeedFragment() {
         // Required empty public constructor
     }
@@ -71,7 +74,7 @@ public class FeedFragment extends Fragment implements FeedMvp.View {
 
         // Pull-to-refresh
         SwipeRefreshLayout swipeRefreshLayout =
-                (SwipeRefreshLayout) root.findViewById(R.id.refresh_layout);
+                (SwipeRefreshLayout) root.findViewById(R.id.content_view);
         swipeRefreshLayout.setColorSchemeColors(
                 ContextCompat.getColor(getActivity(), R.color.colorPrimary),
                 ContextCompat.getColor(getActivity(), R.color.colorAccent),
@@ -84,18 +87,27 @@ public class FeedFragment extends Fragment implements FeedMvp.View {
         });
 
         return root;
+    }
 
+    @Override
+    public void onViewCreated (View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        loadingView = view.findViewById(R.id.loadingView);
+        contentView = view.findViewById(R.id.content_view);
     }
 
     @Override
     public void showLoading(boolean active) {
-        // TODO: Show a loading icon?
+        loadingView.setVisibility(View.VISIBLE);
+        contentView.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void showContent(List<RssFeed.Item> rssItems) {
         rssList.addAll(rssItems);
         listAdapter.notifyDataSetChanged();
+        contentView.setVisibility(View.VISIBLE);
+        loadingView.setVisibility(View.GONE);
     }
 
     @Override
