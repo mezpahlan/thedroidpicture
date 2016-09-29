@@ -28,6 +28,8 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
     private ItemMvp.Presenter presenter;
     private List<RssItem.Photo> photosList = new ArrayList<>(0);
     private ViewPager viewPager;
+    private View contentView;
+    private View loadingView;
 
     public ItemFragment() {
         // Required empty constructor
@@ -72,7 +74,7 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
         View root = inflater.inflate(R.layout.fragment_rss_item, container, false);
 
         // Set up recycler view
-        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.content_view);
         recyclerView.setAdapter(listAdapter);
 
         recyclerView.setHasFixedSize(true);
@@ -86,8 +88,17 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
     }
 
     @Override
+    public void onViewCreated (View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        loadingView = view.findViewById(R.id.loadingView);
+        contentView = view.findViewById(R.id.content_view);
+    }
+
+
+    @Override
     public void showLoading(boolean active) {
-        // TODO: Show a loading icon?
+        loadingView.setVisibility(View.VISIBLE);
+        contentView.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -100,6 +111,8 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
         photosList.addAll(itemPhotos);
         listAdapter.notifyDataSetChanged();
         pagerAdapter.notifyDataSetChanged();
+        contentView.setVisibility(View.VISIBLE);
+        loadingView.setVisibility(View.GONE);
     }
 
     @Override
@@ -116,6 +129,7 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
     public void showExpandedPicture(int position) {
         viewPager.setCurrentItem(position, false);
         viewPager.setVisibility(View.VISIBLE);
+        contentView.setVisibility(View.GONE);
     }
     /**
      * Listener for clicks on items in the RecyclerView.

@@ -25,6 +25,8 @@ public class ItemPresenter implements ItemMvp.Presenter {
     @Override
     public void load(String itemUrl) {
         // TODO: Do we check for retained instances here?
+        // TODO: Refactor showLoading remove boolean??
+        itemView.showLoading(true);
         modelInteractor.fetch(itemUrl);
     }
 
