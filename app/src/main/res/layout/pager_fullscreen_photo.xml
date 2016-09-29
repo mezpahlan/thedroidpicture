@@ -13,9 +13,9 @@
         android:adjustViewBounds="true"
         android:id="@+id/fullscreenImageView"
         android:scaleType="fitCenter"
-        tools:src="@drawable/logo_boston_globe"
         android:layout_above="@+id/fullscreenTextView"
-        android:layout_alignParentTop="true"/>
+        android:layout_alignParentTop="true"
+        tools:src="@drawable/logo_boston_globe" />
 
     <TextView
         android:layout_width="match_parent"
