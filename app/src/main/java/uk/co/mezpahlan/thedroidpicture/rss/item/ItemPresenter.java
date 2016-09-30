@@ -1,11 +1,9 @@
 package uk.co.mezpahlan.thedroidpicture.rss.item;
 
 import android.support.annotation.NonNull;
-import android.view.View;
 
 import java.util.List;
 
-import uk.co.mezpahlan.thedroidpicture.R;
 import uk.co.mezpahlan.thedroidpicture.data.model.RssItem;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -45,5 +43,10 @@ public class ItemPresenter implements ItemMvp.Presenter {
     public void onSelectPhoto(int position) {
         checkNotNull(position, "position cannot be null");
         itemView.showExpandedPicture(position);
+    }
+
+    @Override
+    public void onDetailLongClick() {
+
     }
 }

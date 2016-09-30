@@ -6,9 +6,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +35,7 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
     private ViewPager viewPager;
     private View contentView;
     private View loadingView;
+    private ActionMode actionMode;
 
     public ItemFragment() {
         // Required empty constructor
@@ -49,7 +55,7 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
         super.onCreate(savedInstanceState);
 
         listAdapter = new ItemRecyclerViewAdapter(photosList, photoClickListener);
-        pagerAdapter = new ItemViewPagerAdapter(photosList);
+        pagerAdapter = new ItemViewPagerAdapter(photosList, detailLongClickListener);
     }
 
     @Override
@@ -131,9 +137,8 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
         viewPager.setVisibility(View.VISIBLE);
         contentView.setVisibility(View.GONE);
     }
-    /**
-     * Listener for clicks on items in the RecyclerView.
-     */
+
+    // Listener for clicks on items in the RecyclerView.
     PhotoClickListener photoClickListener = new PhotoClickListener() {
         @Override
         public void onItemClick(int position) {
@@ -141,7 +146,61 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
         }
     };
 
+    DetailLongClickListener detailLongClickListener = new DetailLongClickListener() {
+        @Override
+        public void onDetailLongClick() {
+            if (actionMode != null) {
+                return;
+            }
+
+            // Start the CAB using the ActionMode.Callback defined above
+            actionMode = getActivity().startActionMode(actionModeCallback);
+        }
+    };
+
+    ActionMode.Callback actionModeCallback = new ActionMode.Callback() {
+
+        // Called when the action mode is created; startActionMode() was called
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            // Inflate a menu resource providing context menu items
+            MenuInflater inflater = mode.getMenuInflater();
+            inflater.inflate(R.menu.context_menu, menu);
+            return true;
+        }
+
+        // Called each time the action mode is shown. Always called after onCreateActionMode, but
+        // may be called multiple times if the mode is invalidated.
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false; // Return false if nothing is done
+        }
+
+        // Called when the user selects a contextual menu item
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.menu_share:
+                    Toast.makeText(getActivity(), "Share elected", Toast.LENGTH_SHORT).show();
+                    mode.finish(); // Action picked, so close the CAB
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        // Called when the user exits the action mode
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            actionMode = null;
+        }
+    };
+
     public interface PhotoClickListener {
         void onItemClick(int position);
+    }
+
+    public interface DetailLongClickListener {
+        void onDetailLongClick();
     }
 }

@@ -19,13 +19,15 @@ import uk.co.mezpahlan.thedroidpicture.data.model.RssItem;
  */
 public class ItemViewPagerAdapter extends PagerAdapter {
     private List<RssItem.Photo> photosList;
+    private ItemFragment.DetailLongClickListener detailLongClickListener;
 
-    public ItemViewPagerAdapter(List<RssItem.Photo> photosList ) {
+    public ItemViewPagerAdapter(List<RssItem.Photo> photosList, ItemFragment.DetailLongClickListener detailLongClickListener) {
         this.photosList = photosList;
+        this.detailLongClickListener = detailLongClickListener;
     }
 
     @Override
-    public Object instantiateItem(ViewGroup collection, int position) {
+    public Object instantiateItem(ViewGroup collection, final int position) {
         // TODO: Figure out how to pass the position in from the recyclerview onclick
         LayoutInflater inflater = LayoutInflater.from(collection.getContext());
         ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.pager_fullscreen_photo, collection, false);
@@ -46,6 +48,14 @@ public class ItemViewPagerAdapter extends PagerAdapter {
 
         textView.setText(photo.getDescription());
 
+        fullscreenImageview.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                detailLongClickListener.onDetailLongClick();
+                return false;
+            }
+        });
+
         return layout;
     }
 
@@ -63,4 +73,5 @@ public class ItemViewPagerAdapter extends PagerAdapter {
     public boolean isViewFromObject(View view, Object object) {
         return view == object;
     }
+
 }
