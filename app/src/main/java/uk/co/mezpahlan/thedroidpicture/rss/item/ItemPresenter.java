@@ -44,9 +44,4 @@ public class ItemPresenter implements ItemMvp.Presenter {
         checkNotNull(position, "position cannot be null");
         itemView.showExpandedPicture(position);
     }
-
-    @Override
-    public void onDetailLongClick() {
-
-    }
 }

@@ -1,7 +1,13 @@
 package uk.co.mezpahlan.thedroidpicture.rss.item;
 
 import android.app.Fragment;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
@@ -13,7 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +42,10 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
     private View contentView;
     private View loadingView;
     private ActionMode actionMode;
+    private int selectedDetailPosition;
+    private View selectedView;
+    private Uri sharedUri;
+
 
     public ItemFragment() {
         // Required empty constructor
@@ -113,6 +123,7 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
         // TODO: Double check this is sensible to do. We are throwing away old data and replacing
         // TODO: it with new data. It just so happen that we are confident they match and are the
         // TODO: same. But perhaps we should avoid refetching the data on configuration change??
+        // FIXME: We have a problem here with retained states. Need to do this properly
         photosList.clear();
         photosList.addAll(itemPhotos);
         listAdapter.notifyDataSetChanged();
@@ -148,13 +159,14 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
 
     DetailLongClickListener detailLongClickListener = new DetailLongClickListener() {
         @Override
-        public void onDetailLongClick() {
+        public void onDetailLongClick(int position, View view) {
             if (actionMode != null) {
                 return;
             }
 
-            // Start the CAB using the ActionMode.Callback defined above
             actionMode = getActivity().startActionMode(actionModeCallback);
+            selectedDetailPosition = position;
+            selectedView = view;
         }
     };
 
@@ -166,6 +178,7 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
             // Inflate a menu resource providing context menu items
             MenuInflater inflater = mode.getMenuInflater();
             inflater.inflate(R.menu.context_menu, menu);
+
             return true;
         }
 
@@ -181,7 +194,8 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.menu_share:
-                    Toast.makeText(getActivity(), "Share elected", Toast.LENGTH_SHORT).show();
+                    // TODO: extract URI from here in a method
+                    shareLink(selectedDetailPosition, selectedView);
                     mode.finish(); // Action picked, so close the CAB
                     return true;
                 default:
@@ -193,14 +207,54 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
         @Override
         public void onDestroyActionMode(ActionMode mode) {
             actionMode = null;
+            selectedView = null;
+            selectedDetailPosition = -1;
         }
     };
+
+    private void shareLink(int selectedDetailPosition, View selectedView) {
+        uriFromImageView((ImageView) selectedView);
+
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        RssItem.Photo photo = photosList.get(selectedDetailPosition);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, photo.getDescription());
+        shareIntent.putExtra(Intent.EXTRA_STREAM, sharedUri);
+        shareIntent.setType("image/*");
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        startActivityForResult(Intent.createChooser(shareIntent, "Share via"), 1337);
+    }
+
+    private void uriFromImageView(ImageView selectedView) {
+        Drawable drawable = selectedView.getDrawable();
+        Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
+
+        String path = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(),
+                bitmap, "Image Description", null);
+
+        sharedUri = Uri.parse(path);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        // Delete file
+        if (requestCode == 1337) {
+            deleteAfterShareIntent();
+        }
+    }
+
+    private void deleteAfterShareIntent() {
+        if (sharedUri != null) {
+            getActivity().getContentResolver().delete(sharedUri, null, null);
+            sharedUri = null;
+        }
+    }
 
     public interface PhotoClickListener {
         void onItemClick(int position);
     }
 
     public interface DetailLongClickListener {
-        void onDetailLongClick();
+        void onDetailLongClick(int position, View v);
     }
 }

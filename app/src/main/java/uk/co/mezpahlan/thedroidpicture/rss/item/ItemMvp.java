@@ -23,7 +23,6 @@ public interface ItemMvp {
         void onLoadSuccess(@NonNull List<RssItem.Photo> photos);
         void onLoadError();
         void onSelectPhoto(@NonNull int position);
-        void onDetailLongClick();
     }
 
     interface ModelInteractor {

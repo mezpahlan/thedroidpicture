@@ -51,7 +51,7 @@ public class ItemViewPagerAdapter extends PagerAdapter {
         fullscreenImageview.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                detailLongClickListener.onDetailLongClick();
+                detailLongClickListener.onDetailLongClick(position, v);
                 return false;
             }
         });
