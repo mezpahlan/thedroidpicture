@@ -78,6 +78,13 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
     }
 
     @Override
+    public void onViewCreated (View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        loadingView = view.findViewById(R.id.loadingView);
+        contentView = view.findViewById(R.id.content_view);
+    }
+
+    @Override
     public void onResume(){
         super.onResume();
         String itemUrl = getArguments().getString(ARGUMENT_ITEM_URL);
@@ -91,13 +98,6 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
         setRetainInstance(true);
 
         presenter = new ItemPresenter(this);
-    }
-
-    @Override
-    public void onViewCreated (View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        loadingView = view.findViewById(R.id.loadingView);
-        contentView = view.findViewById(R.id.content_view);
     }
 
 
