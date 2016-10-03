@@ -1,7 +1,7 @@
 package uk.co.mezpahlan.thedroidpicture.base;
 
 /**
- * Base Mvp definitions for operations that all implementations will use.
+ * Base MVP definitions for operations that all implementations will use.
  */
 public interface BaseMvp {
 
@@ -11,7 +11,12 @@ public interface BaseMvp {
         void showError();
     }
 
+    interface Presenter {
+        void onDestroy(boolean isConfigChanging);
+    }
+
     interface ModelInteractor {
         void onDestroy();
+
     }
 }
