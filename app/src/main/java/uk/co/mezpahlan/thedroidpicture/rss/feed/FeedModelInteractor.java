@@ -18,6 +18,7 @@ public class FeedModelInteractor implements FeedMvp.ModelInteractor {
     private static final String TAG = "FeedModelInteractor";
     private FeedMvp.Presenter feedPresenter;
     private BostonGlobeClient client;
+    private RssFeed rssFeed;
 
     public FeedModelInteractor(FeedMvp.Presenter feedPresenter) {
         this.feedPresenter = feedPresenter;
@@ -33,7 +34,9 @@ public class FeedModelInteractor implements FeedMvp.ModelInteractor {
             public void onResponse(Call<RssFeed> call, Response<RssFeed> response) {
                 if (response.isSuccessful()) {
                     // We just want the response. Don't do any conversions here.
-                    onFetched(response.body());
+                    // Cache response as we might need it later
+                    rssFeed = response.body();
+                    onFetched(rssFeed);
                 } else {
                     // We just want the error. Don't do any conversions here.
                     onError();
@@ -48,6 +51,14 @@ public class FeedModelInteractor implements FeedMvp.ModelInteractor {
         });
     }
 
+    // TODO: Put this in the MVP interface
+    public void fetchCached() {
+        if (rssFeed == null) {
+            fetch();
+        }
+        onFetched(rssFeed);
+    }
+
     @Override
     public void onFetched(RssFeed rssFeed) {
         List<RssFeed.Item> rssItems = rssFeed.getChannel().getItem();
@@ -57,12 +68,11 @@ public class FeedModelInteractor implements FeedMvp.ModelInteractor {
     @Override
     public void onError() {
         // TODO: Implement me
-        Log.e("Mez", "Something went wrong in the FeedModelInteractor");
+        Log.e(TAG, "Something went wrong in the FeedModelInteractor");
     }
 
     @Override
     public void onDestroy() {
-        // TODO: Implement me
-        Log.d(TAG, "onDestroy: Clean up model interactor long running stuff here.");
+        rssFeed = null;
     }
 }
