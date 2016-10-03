@@ -23,10 +23,7 @@ public interface FeedMvp {
         void onSelectRssItem(@NonNull RssFeed.Item rssItem);
     }
 
-    interface ModelInteractor extends BaseMvp.ModelInteractor {
-        void fetch();
+    interface ModelInteractor extends BaseMvp.ModelInteractor <RssFeed> {
         void fetchCached();
-        void onFetched(RssFeed rssFeed);
-        void onError();
     }
 }

@@ -15,7 +15,10 @@ public interface BaseMvp {
         void onDestroy(boolean isConfigChanging);
     }
 
-    interface ModelInteractor {
+    interface ModelInteractor <MT> {
+        void fetch();
+        void onFetched(MT modelType);
+        void onError();
         void onDestroy();
 
     }
