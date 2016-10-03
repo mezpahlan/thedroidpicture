@@ -34,10 +34,9 @@ public class ItemActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // TODO: Move this to MVP??
-        FragmentManager fragmentManager = getFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentById(R.id.itemContentFrame);
-        View fullscreenViewPager = fragment.getView().findViewById(R.id.viewpager);
+        final FragmentManager fragmentManager = getFragmentManager();
+        final Fragment fragment = fragmentManager.findFragmentById(R.id.itemContentFrame);
+        final View fullscreenViewPager = fragment.getView().findViewById(R.id.viewpager);
         final View contentView = fragment.getView().findViewById(R.id.content_view);
 
         if (fullscreenViewPager != null && View.VISIBLE == fullscreenViewPager.getVisibility()) {
