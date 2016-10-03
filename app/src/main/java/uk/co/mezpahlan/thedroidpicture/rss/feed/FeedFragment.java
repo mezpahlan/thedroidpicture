@@ -31,11 +31,6 @@ public class FeedFragment extends Fragment implements FeedMvp.View {
     private View loadingView;
     private View contentView;
 
-    public FeedFragment() {
-        // TODO: Delete this if not needed
-        // Required empty public constructor
-    }
-
     public static FeedFragment newInstance() {
         return new FeedFragment();
     }
