@@ -50,8 +50,10 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
         Bundle arguments = new Bundle();
         arguments.putString(ARGUMENT_ITEM_TITLE, itemTitle);
         arguments.putString(ARGUMENT_ITEM_URL, itemUrl);
+
         ItemFragment fragment = new ItemFragment();
         fragment.setArguments(arguments);
+
         return fragment;
     }
 
