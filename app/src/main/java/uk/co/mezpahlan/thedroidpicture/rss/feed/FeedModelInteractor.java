@@ -15,6 +15,7 @@ import uk.co.mezpahlan.thedroidpicture.data.model.RssFeed;
  * Created by mpahlan on 24/07/16.
  */
 public class FeedModelInteractor implements FeedMvp.ModelInteractor {
+    private static final String TAG = "FeedModelInteractor";
     private FeedMvp.Presenter feedPresenter;
     private BostonGlobeClient client;
 
@@ -44,7 +45,7 @@ public class FeedModelInteractor implements FeedMvp.ModelInteractor {
                 // We just want the error. Don't do any conversions here.
                 onError();
             }
-        });;
+        });
     }
 
     @Override
@@ -57,5 +58,11 @@ public class FeedModelInteractor implements FeedMvp.ModelInteractor {
     public void onError() {
         // TODO: Implement me
         Log.e("Mez", "Something went wrong in the FeedModelInteractor");
+    }
+
+    @Override
+    public void onDestroy() {
+        // TODO: Implement me
+        Log.d(TAG, "onDestroy: Clean up model interactor long running stuff here.");
     }
 }
