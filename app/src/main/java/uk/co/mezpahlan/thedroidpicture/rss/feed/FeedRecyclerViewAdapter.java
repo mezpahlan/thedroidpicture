@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import uk.co.mezpahlan.thedroidpicture.R;
@@ -19,12 +20,18 @@ import uk.co.mezpahlan.thedroidpicture.data.model.RssFeed;
  */
 public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedRecyclerViewAdapter.FeedViewHolder> {
 
-    private List<RssFeed.Item> itemList;
+    private List<RssFeed.Item> itemList = new ArrayList<>(0);
     private FeedFragment.RssFeedItemClickListener rssFeedItemClickListener;
     private int expandedDescriptionPosition = -1;
 
-    public FeedRecyclerViewAdapter(List<RssFeed.Item> itemList, FeedFragment.RssFeedItemClickListener rssFeedItemClickListener) {
-        this.itemList = itemList;
+    public void setItemList(List<RssFeed.Item> itemList) {
+        // Remove any items from list1 that aren't in list 2
+        this.itemList.removeAll(itemList);
+        // Add list 2 to the remaining items from list 1
+        this.itemList.addAll(itemList);
+    }
+
+    public void setRssFeedItemClickListener(FeedFragment.RssFeedItemClickListener rssFeedItemClickListener) {
         this.rssFeedItemClickListener = rssFeedItemClickListener;
     }
 

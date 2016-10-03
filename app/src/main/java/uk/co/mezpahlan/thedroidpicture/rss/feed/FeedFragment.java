@@ -3,7 +3,6 @@ package uk.co.mezpahlan.thedroidpicture.rss.feed;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,10 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import uk.co.mezpahlan.thedroidpicture.R;
+import uk.co.mezpahlan.thedroidpicture.base.StateMaintainer;
 import uk.co.mezpahlan.thedroidpicture.data.model.RssFeed;
 import uk.co.mezpahlan.thedroidpicture.rss.item.ItemActivity;
 
@@ -23,15 +22,17 @@ import uk.co.mezpahlan.thedroidpicture.rss.item.ItemActivity;
  * Created by mpahlan on 24/07/16.
  */
 public class FeedFragment extends Fragment implements FeedMvp.View {
+    private static final String TAG = "FeedFragment";
 
+    private StateMaintainer stateMaintainer;
     private FeedRecyclerViewAdapter listAdapter;
     private FeedMvp.Presenter presenter;
-    private List<RssFeed.Item> rssList = new ArrayList<>(0);
 
     private View loadingView;
     private View contentView;
 
     public FeedFragment() {
+        // TODO: Delete this if not needed
         // Required empty public constructor
     }
 
@@ -40,33 +41,13 @@ public class FeedFragment extends Fragment implements FeedMvp.View {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        listAdapter = new FeedRecyclerViewAdapter(rssList, rssFeedItemClickListener);
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-
-        presenter.load(false);
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        setRetainInstance(true);
-
-        presenter = new FeedPresenter(this);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_rss_feed, container, false);
         RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.recycler_view);
+
+        listAdapter = new FeedRecyclerViewAdapter();
+        listAdapter.setRssFeedItemClickListener(rssFeedItemClickListener);
         recyclerView.setAdapter(listAdapter);
 
         recyclerView.setHasFixedSize(true);
@@ -97,6 +78,49 @@ public class FeedFragment extends Fragment implements FeedMvp.View {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        setupStateMaintainer();
+        checkForRetainedState();
+    }
+
+    private void setupStateMaintainer() {
+        if (stateMaintainer == null) {
+            stateMaintainer = new StateMaintainer(getActivity().getFragmentManager(), TAG);
+        }
+    }
+
+    private void checkForRetainedState() {
+        try {
+            if (stateMaintainer.isFirstTimeIn()) {
+                initialise(this);
+            } else {
+                reinitialise(this);
+            }
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void initialise(FeedMvp.View view) throws InstantiationException, IllegalAccessException{
+        presenter = new FeedPresenter(view);
+        stateMaintainer.put(FeedMvp.Presenter.class.getSimpleName(), presenter);
+        presenter.load(false);
+    }
+
+    private void reinitialise(FeedMvp.View view) throws InstantiationException, IllegalAccessException {
+        presenter = stateMaintainer.get(FeedMvp.Presenter.class.getSimpleName());
+
+        if (presenter == null) {
+            // If we can't find a presenter assume that its not there and initialise it again.
+            initialise(view);
+        } else {
+            // Otherwise tell it that the configuration has changed
+            presenter.onConfigurationChanged(view);
+        }
+    }
+
+    @Override
     public void showLoading(boolean active) {
         loadingView.setVisibility(View.VISIBLE);
         contentView.setVisibility(View.INVISIBLE);
@@ -104,7 +128,7 @@ public class FeedFragment extends Fragment implements FeedMvp.View {
 
     @Override
     public void showContent(List<RssFeed.Item> rssItems) {
-        rssList.addAll(rssItems);
+        listAdapter.setItemList(rssItems);
         listAdapter.notifyDataSetChanged();
         contentView.setVisibility(View.VISIBLE);
         loadingView.setVisibility(View.GONE);

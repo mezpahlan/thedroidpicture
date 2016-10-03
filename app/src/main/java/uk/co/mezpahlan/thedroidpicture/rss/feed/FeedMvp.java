@@ -17,15 +17,22 @@ public interface FeedMvp {
     }
 
     interface Presenter {
+        void onConfigurationChanged(View view);
         void load(boolean isUserDrive);
         void onLoadSuccess(@NonNull List<RssFeed.Item> rssList);
         void onLoadError();
         void onSelectRssItem(@NonNull RssFeed.Item rssItem);
+
+        // TODO: Add this to base MVP
+        void onDestroy(boolean isConfigChanging);
     }
 
     interface ModelInteractor {
         void fetch();
+        void fetchCached();
         void onFetched(RssFeed rssFeed);
         void onError();
+        // TODO: Add this to base MVP
+        void onDestroy();
     }
 }

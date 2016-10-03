@@ -51,12 +51,12 @@ public class FeedModelInteractor implements FeedMvp.ModelInteractor {
         });
     }
 
-    // TODO: Put this in the MVP interface
     public void fetchCached() {
         if (rssFeed == null) {
             fetch();
+        } else {
+            onFetched(rssFeed);
         }
-        onFetched(rssFeed);
     }
 
     @Override
