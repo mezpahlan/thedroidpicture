@@ -27,12 +27,10 @@ public interface FeedMvp {
         void onDestroy(boolean isConfigChanging);
     }
 
-    interface ModelInteractor {
+    interface ModelInteractor extends BaseMvp.ModelInteractor {
         void fetch();
         void fetchCached();
         void onFetched(RssFeed rssFeed);
         void onError();
-        // TODO: Add this to base MVP
-        void onDestroy();
     }
 }
