@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import uk.co.mezpahlan.thedroidpicture.R;
@@ -19,7 +20,7 @@ import uk.co.mezpahlan.thedroidpicture.data.model.RssItem;
  */
 public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerViewAdapter.ItemViewHolder> {
 
-    private List<RssItem.Photo> itemList;
+    private List<RssItem.Photo> itemList = new ArrayList<>(0);
     private final ItemFragment.PhotoClickListener photoClickListener;
 
     public ItemRecyclerViewAdapter(ItemFragment.PhotoClickListener photoClickListener) {
@@ -27,7 +28,10 @@ public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerVi
     }
 
     public void setItemList(List<RssItem.Photo> itemList) {
-        this.itemList = itemList;
+        // Remove any items from list1 that aren't in list 2
+        this.itemList.removeAll(itemList);
+        // Add list 2 to the remaining items from list 1
+        this.itemList.addAll(itemList);
     }
 
     @Override

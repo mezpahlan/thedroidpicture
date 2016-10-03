@@ -8,7 +8,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -58,12 +57,24 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_rss_item, container, false);
 
+        // Set up recycler view
+        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.content_view);
         listAdapter = new ItemRecyclerViewAdapter(photoClickListener);
         listAdapter.setItemList(photosList);
+        recyclerView.setAdapter(listAdapter);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+
+        // Set up view pager
+        viewPager = (ViewPager) root.findViewById(R.id.viewpager);
         pagerAdapter = new ItemViewPagerAdapter(photosList, detailLongClickListener);
+        viewPager.setAdapter(pagerAdapter);
+
+        return root;
     }
 
     @Override
@@ -80,25 +91,6 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
         setRetainInstance(true);
 
         presenter = new ItemPresenter(this);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_rss_item, container, false);
-
-        // Set up recycler view
-        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.content_view);
-        recyclerView.setAdapter(listAdapter);
-
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-
-        // Set up view pager
-        viewPager = (ViewPager) root.findViewById(R.id.viewpager);
-        viewPager.setAdapter(pagerAdapter);
-
-        return root;
     }
 
     @Override
@@ -124,6 +116,7 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
         // FIXME: We have a problem here with retained states. Need to do this properly
         photosList.clear();
         photosList.addAll(itemPhotos);
+        listAdapter.setItemList(itemPhotos);
         listAdapter.notifyDataSetChanged();
         pagerAdapter.notifyDataSetChanged();
         contentView.setVisibility(View.VISIBLE);
