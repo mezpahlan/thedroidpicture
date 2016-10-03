@@ -5,9 +5,9 @@ package uk.co.mezpahlan.thedroidpicture.base;
  */
 public interface BaseMvp {
 
-    interface LCEView <T> {
+    interface LCEView <VT> {
         void showLoading(boolean active);
-        void showContent(T viewType);
+        void showContent(VT viewType);
         void showError();
     }
 
