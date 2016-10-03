@@ -11,7 +11,10 @@ public interface BaseMvp {
         void showError();
     }
 
-    interface Presenter {
+    interface Presenter <PT> {
+        void load(boolean isUserDrive);
+        void onLoadSuccess(PT presenterType);
+        void onLoadError();
         void onDestroy(boolean isConfigChanging);
     }
 

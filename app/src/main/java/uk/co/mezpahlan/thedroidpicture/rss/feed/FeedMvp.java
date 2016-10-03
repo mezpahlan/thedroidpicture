@@ -15,11 +15,8 @@ public interface FeedMvp {
         void showRssItem(String title, String rssItemLink);
     }
 
-    interface Presenter extends BaseMvp.Presenter {
+    interface Presenter extends BaseMvp.Presenter <List<RssFeed.Item>> {
         void onConfigurationChanged(View view);
-        void load(boolean isUserDrive);
-        void onLoadSuccess(@NonNull List<RssFeed.Item> rssList);
-        void onLoadError();
         void onSelectRssItem(@NonNull RssFeed.Item rssItem);
     }
 
