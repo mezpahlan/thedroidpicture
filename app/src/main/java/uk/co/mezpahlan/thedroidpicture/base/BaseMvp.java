@@ -20,6 +20,5 @@ public interface BaseMvp {
         void onFetched(MT modelType);
         void onError();
         void onDestroy();
-
     }
 }
