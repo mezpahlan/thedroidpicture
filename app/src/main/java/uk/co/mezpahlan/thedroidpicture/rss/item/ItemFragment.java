@@ -46,11 +46,6 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
     private View selectedView;
     private Uri sharedUri;
 
-
-    public ItemFragment() {
-        // Required empty constructor
-    }
-
     public static ItemFragment newInstance(String itemTitle, String itemUrl) {
         Bundle arguments = new Bundle();
         arguments.putString(ARGUMENT_ITEM_TITLE, itemTitle);
