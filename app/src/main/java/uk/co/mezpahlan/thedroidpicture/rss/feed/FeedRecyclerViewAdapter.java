@@ -24,7 +24,7 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedRecyclerVi
     private FeedFragment.RssFeedItemClickListener rssFeedItemClickListener;
     private int expandedDescriptionPosition = -1;
 
-    public void setItemList(List<RssFeed.Item> itemList) {
+    public void updateItems(List<RssFeed.Item> itemList) {
         // Remove any items from list1 that aren't in list 2
         this.itemList.removeAll(itemList);
         // Add list 2 to the remaining items from list 1
