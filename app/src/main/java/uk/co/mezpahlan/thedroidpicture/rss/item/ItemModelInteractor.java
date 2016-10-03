@@ -24,6 +24,7 @@ import uk.co.mezpahlan.thedroidpicture.data.model.RssItem;
 public class ItemModelInteractor implements ItemMvp.ModelInteractor {
     private ItemMvp.Presenter itemPresenter;
     private BostonGlobeClient client;
+    private RssItem rssItem;
 
     public ItemModelInteractor(ItemMvp.Presenter itemPresenter) {
         this.itemPresenter = itemPresenter;
@@ -39,7 +40,8 @@ public class ItemModelInteractor implements ItemMvp.ModelInteractor {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     try {
-                        onFetched(convertHtmlToRssItem(response.body()));
+                        rssItem = convertHtmlToRssItem(response.body());
+                        onFetched(rssItem);
                     } catch (IOException e) {
                         onFailure(call, e);
                     }
@@ -55,6 +57,15 @@ public class ItemModelInteractor implements ItemMvp.ModelInteractor {
                 onError();
             }
         });
+    }
+
+    @Override
+    public void fetchCached(String itemUrl) {
+        if (rssItem == null) {
+            fetch(itemUrl);
+        } else {
+            onFetched(rssItem);
+        }
     }
 
     @Override

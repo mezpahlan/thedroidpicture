@@ -23,10 +23,12 @@ public interface ItemMvp {
         void onLoadSuccess(@NonNull List<RssItem.Photo> photos);
         void onLoadError();
         void onSelectPhoto(@NonNull int position);
+        void onConfigurationChanged(View view, String itemUrl);
     }
 
     interface ModelInteractor {
         void fetch(String itemUrl);
+        void fetchCached(String itemUrl);
         void onFetched(RssItem rssItem);
         void onError();
     }

@@ -7,7 +7,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -20,19 +20,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import uk.co.mezpahlan.thedroidpicture.R;
+import uk.co.mezpahlan.thedroidpicture.base.StateMaintainer;
 import uk.co.mezpahlan.thedroidpicture.data.model.RssItem;
+import uk.co.mezpahlan.thedroidpicture.rss.feed.FeedMvp;
 
 /**
  * Fragment for RssItem. Part of the MVP View layer.
  */
 public class ItemFragment extends Fragment implements ItemMvp.View {
 
+    private static final String TAG = "ItemFragment";
     public static final String ARGUMENT_ITEM_TITLE = "ITEM_TITLE";
     public static final String ARGUMENT_ITEM_URL = "ITEM_URL";
+
+    private StateMaintainer stateMaintainer;
     private ItemRecyclerViewAdapter listAdapter;
     private ItemViewPagerAdapter pagerAdapter;
     private ItemMvp.Presenter presenter;
@@ -44,6 +52,7 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
     private int selectedDetailPosition;
     private View selectedView;
     private Uri sharedUri;
+    private String itemUrl;
 
     public static ItemFragment newInstance(String itemTitle, String itemUrl) {
         Bundle arguments = new Bundle();
@@ -54,6 +63,12 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
         fragment.setArguments(arguments);
 
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        itemUrl = getArguments().getString(ARGUMENT_ITEM_URL);
     }
 
     @Override
@@ -85,21 +100,47 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
     }
 
     @Override
-    public void onResume(){
-        super.onResume();
-        String itemUrl = getArguments().getString(ARGUMENT_ITEM_URL);
+    public void onStart(){
+        super.onStart();
+        setupStateMaintainer();
+        checkForRetainedState();
+    }
+
+    private void setupStateMaintainer() {
+        if (stateMaintainer == null) {
+            stateMaintainer = new StateMaintainer(getActivity().getFragmentManager(), TAG);
+        }
+    }
+
+    private void checkForRetainedState() {
+        try {
+            if (stateMaintainer.isFirstTimeIn()) {
+                initialise(this);
+            } else {
+                reinitialise(this);
+            }
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void initialise(ItemMvp.View view) throws InstantiationException, IllegalAccessException{
+        presenter = new ItemPresenter(view);
+        stateMaintainer.put(FeedMvp.Presenter.class.getSimpleName(), presenter);
         presenter.load(itemUrl);
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    private void reinitialise(ItemMvp.View view) throws InstantiationException, IllegalAccessException {
+        presenter = stateMaintainer.get(ItemMvp.Presenter.class.getSimpleName());
 
-        setRetainInstance(true);
-
-        presenter = new ItemPresenter(this);
+        if (presenter == null) {
+            // If we can't find a presenter assume that its not there and initialise it again.
+            initialise(view);
+        } else {
+            // Otherwise tell it that the configuration has changed
+            presenter.onConfigurationChanged(view, itemUrl);
+        }
     }
-
 
     @Override
     public void showLoading(boolean active) {
@@ -186,7 +227,7 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
             switch (item.getItemId()) {
                 case R.id.menu_share:
                     // TODO: extract URI from here in a method
-                    shareLink(selectedDetailPosition, selectedView);
+                    shareImageAndText(selectedDetailPosition, selectedView);
                     mode.finish(); // Action picked, so close the CAB
                     return true;
                 default:
@@ -203,42 +244,38 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
         }
     };
 
-    private void shareLink(int selectedDetailPosition, View selectedView) {
-        uriFromImageView((ImageView) selectedView);
+    private void shareImageAndText(int selectedDetailPosition, View selectedView) {
+        Bitmap bitmap = getBitmapFromImageView((ImageView) selectedView);
+        File tempFile = saveTempImage(bitmap);
+        Uri tempFileUri = Uri.fromFile(tempFile);
 
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         RssItem.Photo photo = photosList.get(selectedDetailPosition);
         shareIntent.putExtra(Intent.EXTRA_TEXT, photo.getDescription());
-        shareIntent.putExtra(Intent.EXTRA_STREAM, sharedUri);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, tempFileUri);
         shareIntent.setType("image/*");
         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        startActivityForResult(Intent.createChooser(shareIntent, "Share via"), 1337);
+        startActivity(Intent.createChooser(shareIntent, "Share via"));
     }
 
-    private void uriFromImageView(ImageView selectedView) {
-        Drawable drawable = selectedView.getDrawable();
-        Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
-
-        String path = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(),
-                bitmap, "Image Description", null);
-
-        sharedUri = Uri.parse(path);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Check which request we're responding to
-        // Delete file
-        if (requestCode == 1337) {
-            deleteAfterShareIntent();
+    @Nullable
+    private File saveTempImage(Bitmap bmp) {
+        File outputDir = getActivity().getExternalCacheDir();
+        File outputFile = null;
+        try {
+            outputFile = File.createTempFile("share_image", ".png", outputDir);
+            FileOutputStream out = new FileOutputStream(outputFile);
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        return outputFile;
     }
 
-    private void deleteAfterShareIntent() {
-        if (sharedUri != null) {
-            getActivity().getContentResolver().delete(sharedUri, null, null);
-            sharedUri = null;
-        }
+    private Bitmap getBitmapFromImageView(ImageView imageView) {
+        Drawable drawable = imageView.getDrawable();
+        return  ((BitmapDrawable)drawable).getBitmap();
     }
 
     public interface PhotoClickListener {
