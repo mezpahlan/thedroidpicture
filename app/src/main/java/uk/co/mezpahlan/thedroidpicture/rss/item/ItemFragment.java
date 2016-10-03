@@ -28,7 +28,7 @@ import uk.co.mezpahlan.thedroidpicture.R;
 import uk.co.mezpahlan.thedroidpicture.data.model.RssItem;
 
 /**
- * Created by mpahlan on 27/07/16.
+ * Fragment for RssItem. Part of the MVP View layer.
  */
 public class ItemFragment extends Fragment implements ItemMvp.View {
 
@@ -61,7 +61,8 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        listAdapter = new ItemRecyclerViewAdapter(photosList, photoClickListener);
+        listAdapter = new ItemRecyclerViewAdapter(photoClickListener);
+        listAdapter.setItemList(photosList);
         pagerAdapter = new ItemViewPagerAdapter(photosList, detailLongClickListener);
     }
 

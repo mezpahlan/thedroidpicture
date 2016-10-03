@@ -15,15 +15,19 @@ import uk.co.mezpahlan.thedroidpicture.R;
 import uk.co.mezpahlan.thedroidpicture.data.model.RssItem;
 
 /**
- * Created by mpahlan on 28/07/16.
+ * RecyclerViewAdapter for RssItem.
  */
 public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerViewAdapter.ItemViewHolder> {
+
     private List<RssItem.Photo> itemList;
     private final ItemFragment.PhotoClickListener photoClickListener;
 
-    public ItemRecyclerViewAdapter(List<RssItem.Photo> itemList, ItemFragment.PhotoClickListener photoClickListener) {
-        this.itemList = itemList;
+    public ItemRecyclerViewAdapter(ItemFragment.PhotoClickListener photoClickListener) {
         this.photoClickListener = photoClickListener;
+    }
+
+    public void setItemList(List<RssItem.Photo> itemList) {
+        this.itemList = itemList;
     }
 
     @Override
