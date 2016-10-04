@@ -12,7 +12,7 @@ import uk.co.mezpahlan.thedroidpicture.R;
 
 /**
  * Activity for RssItem. Sets up the fragment that is received as a result of an
- * intent from RssFeed. Also handles back button presses.
+ * intent from RssFeed. Also sets up custom Toolbar and handles back button presses.
  */
 public class ItemActivity extends AppCompatActivity {
     public static final String EXTRA_ITEM_URL = "ITEM_URL";
