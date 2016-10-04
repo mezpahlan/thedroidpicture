@@ -11,7 +11,8 @@ import android.view.View;
 import uk.co.mezpahlan.thedroidpicture.R;
 
 /**
- * Created by mpahlan on 27/07/16.
+ * Activity for RssItem. Sets up the fragment that is received as a result of an
+ * intent from RssFeed. Also handles back button presses.
  */
 public class ItemActivity extends AppCompatActivity {
     public static final String EXTRA_ITEM_URL = "ITEM_URL";
