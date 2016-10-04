@@ -6,6 +6,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import uk.co.mezpahlan.thedroidpicture.R;
@@ -27,6 +28,9 @@ public class ItemActivity extends AppCompatActivity {
         final Intent intent = getIntent();
         String itemTitle = intent.getStringExtra(EXTRA_ITEM_TITLE);
         String itemUrl = intent.getStringExtra(EXTRA_ITEM_URL);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         if (null == savedInstanceState) {
             initFragment(ItemFragment.newInstance(itemTitle, itemUrl));
