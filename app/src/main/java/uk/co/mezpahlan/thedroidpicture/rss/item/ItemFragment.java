@@ -101,7 +101,7 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
 
     @Override
     public void onStart(){
-            super.onStart();
+        super.onStart();
         setupStateMaintainer();
         checkForRetainedState();
     }
