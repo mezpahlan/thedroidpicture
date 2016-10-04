@@ -52,7 +52,6 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
     private ActionMode actionMode;
     private int selectedDetailPosition;
     private View selectedView;
-    private Uri sharedUri;
     private String itemUrl;
 
     public static ItemFragment newInstance(String itemTitle, String itemUrl) {
