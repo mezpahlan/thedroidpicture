@@ -101,7 +101,7 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
 
     @Override
     public void onStart(){
-        super.onStart();
+            super.onStart();
         setupStateMaintainer();
         checkForRetainedState();
     }
@@ -151,9 +151,6 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
     @Override
     public void showContent(List<RssItem.Photo> itemPhotos) {
         setTitle(getArguments().getString(ARGUMENT_ITEM_TITLE));
-        // TODO: Double check this is sensible to do. We are throwing away old data and replacing
-        // TODO: it with new data. It just so happen that we are confident they match and are the
-        // TODO: same. But perhaps we should avoid refetching the data on configuration change??
         // FIXME: We have a problem here with retained states. Need to do this properly
         photosList.clear();
         photosList.addAll(itemPhotos);
