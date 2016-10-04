@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -247,30 +248,35 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
     private void shareImageAndText(int selectedDetailPosition, View selectedView) {
         Bitmap bitmap = getBitmapFromImageView((ImageView) selectedView);
         File tempFile = saveTempImage(bitmap);
-        Uri tempFileUri = Uri.fromFile(tempFile);
+        Uri contentUri = FileProvider.getUriForFile(getActivity(), "uk.co.mezpahlan.thedroidpicture.fileprovider", tempFile);
 
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        RssItem.Photo photo = photosList.get(selectedDetailPosition);
-        shareIntent.putExtra(Intent.EXTRA_TEXT, photo.getDescription());
-        shareIntent.putExtra(Intent.EXTRA_STREAM, tempFileUri);
-        shareIntent.setType("image/*");
-        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        startActivity(Intent.createChooser(shareIntent, "Share via"));
+        if (contentUri != null) {
+            Intent shareIntent = new Intent();
+            shareIntent.setAction(Intent.ACTION_SEND);
+            RssItem.Photo photo = photosList.get(selectedDetailPosition);
+            shareIntent.putExtra(Intent.EXTRA_TEXT, photo.getDescription());
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // temp permission for receiving app to read this file
+            shareIntent.setType("image/*");
+            shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
+            startActivity(Intent.createChooser(shareIntent, "Choose an app"));
+        }
     }
 
     @Nullable
     private File saveTempImage(Bitmap bmp) {
-        File outputDir = getActivity().getExternalCacheDir();
-        File outputFile = null;
+        File cachePath = new File(getActivity().getCacheDir(), "images");
+        // TODO: We don't use the output of this method. Investigate.
+        cachePath.mkdirs();
+
         try {
-            outputFile = File.createTempFile("share_image", ".png", outputDir);
-            FileOutputStream out = new FileOutputStream(outputFile);
-            bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
-            out.close();
+            // Overwrites this image every time
+            FileOutputStream stream = new FileOutputStream(cachePath + "/image.png");
+            bmp.compress(Bitmap.CompressFormat.PNG, 90, stream);
+            stream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return outputFile;
+        return new File(cachePath, "image.png");
     }
 
     private Bitmap getBitmapFromImageView(ImageView imageView) {

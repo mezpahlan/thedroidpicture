@@ -20,6 +20,15 @@
             </intent-filter>
         </activity>
         <activity android:name=".rss.item.ItemActivity" />
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="uk.co.mezpahlan.thedroidpicture.fileprovider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
     </application>
 
 </manifest>
