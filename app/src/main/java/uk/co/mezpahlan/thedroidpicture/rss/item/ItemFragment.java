@@ -69,6 +69,7 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         itemUrl = getArguments().getString(ARGUMENT_ITEM_URL);
+        setTitle(getArguments().getString(ARGUMENT_ITEM_TITLE));
     }
 
     @Override
@@ -146,11 +147,11 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
     public void showLoading(boolean active) {
         loadingView.setVisibility(View.VISIBLE);
         contentView.setVisibility(View.INVISIBLE);
+        viewPager.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void showContent(List<RssItem.Photo> itemPhotos) {
-        setTitle(getArguments().getString(ARGUMENT_ITEM_TITLE));
         // FIXME: We have a problem here with retained states. Need to do this properly
         photosList.clear();
         photosList.addAll(itemPhotos);
