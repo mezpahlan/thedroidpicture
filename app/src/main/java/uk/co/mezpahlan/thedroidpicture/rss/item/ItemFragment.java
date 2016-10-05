@@ -39,9 +39,9 @@ import uk.co.mezpahlan.thedroidpicture.rss.feed.FeedMvp;
  */
 public class ItemFragment extends Fragment implements ItemMvp.View {
 
-    private static final String TAG = "ItemFragment";
     public static final String ARGUMENT_ITEM_TITLE = "ITEM_TITLE";
     public static final String ARGUMENT_ITEM_URL = "ITEM_URL";
+    private static final String TAG = "ItemFragment";
 
     private StateMaintainer stateMaintainer;
     private ItemRecyclerViewAdapter listAdapter;
