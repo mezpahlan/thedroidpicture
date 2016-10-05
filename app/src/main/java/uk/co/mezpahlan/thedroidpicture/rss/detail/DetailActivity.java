@@ -13,7 +13,7 @@ import uk.co.mezpahlan.thedroidpicture.R;
 
 /**
  * Activity for RssItemDetail. Sets up the fragment that is received as a result of an
- * intent from RssItem. Also sets up custom Toolbar and handles back button presses.
+ * intent from RssItem. Also sets up custom Toolbar.
  */
 
 public class DetailActivity extends AppCompatActivity {
@@ -40,23 +40,6 @@ public class DetailActivity extends AppCompatActivity {
             initFragment(DetailFragment.newInstance(wrappedPhotoList, position));
         }
     }
-
-
-    // TODO: Check if we need to override back button behaviour. If not remove Class comment.
-//    @Override
-//    public void onBackPressed() {
-//        final FragmentManager fragmentManager = getFragmentManager();
-//        final Fragment fragment = fragmentManager.findFragmentById(R.id.itemContentFrame);
-//        final View fullscreenViewPager = fragment.getView().findViewById(R.id.viewpager);
-//        final View contentView = fragment.getView().findViewById(R.id.content_view);
-//
-//        if (fullscreenViewPager != null && View.VISIBLE == fullscreenViewPager.getVisibility()) {
-//            fullscreenViewPager.setVisibility(View.GONE);
-//            contentView.setVisibility(View.VISIBLE);
-//        } else {
-//            super.onBackPressed();
-//        }
-//    }
 
     private void initFragment(Fragment itemFragment) {
         // Add the ItemFragment to the layout
