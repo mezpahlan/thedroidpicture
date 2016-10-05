@@ -36,7 +36,6 @@ public class DetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         if (null == savedInstanceState) {
-            // TODO: Change to DetailFragment
             initFragment(DetailFragment.newInstance(wrappedPhotoList, position));
         }
     }
