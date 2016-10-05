@@ -62,6 +62,9 @@ public class DetailFragment extends Fragment implements DetailMvp.View {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_rss_detail, container, false);
 
+        // Set up the loading view
+        loadingView = root.findViewById(R.id.loadingView);
+
         // Set up view pager
         contentView = (ViewPager) root.findViewById(R.id.content_view);
         pagerAdapter = new DetailViewPagerAdapter(photosList);
@@ -69,13 +72,6 @@ public class DetailFragment extends Fragment implements DetailMvp.View {
         contentView.setCurrentItem(startPosition);
 
         return root;
-    }
-
-    @Override
-    public void onViewCreated (View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        // TODO: Move this to onCreateView??
-        loadingView = view.findViewById(R.id.loadingView);
     }
 
     @Override
