@@ -173,7 +173,6 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
     @Override
     public void showExpandedPicture(int position) {
         // Naive implementation using an intent to move between activities
-        // TODO: Think about getContext() which is API 23
         Intent intent = new Intent(getActivity(), DetailActivity.class);
         intent.putExtra(DetailActivity.EXTRA_DETAIL_PHOTO_LIST, Parcels.wrap(photosList));
         intent.putExtra(DetailActivity.EXTRA_DETAIL_POSITION, position);
