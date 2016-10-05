@@ -9,7 +9,7 @@ import java.lang.ref.WeakReference;
  */
 public class DetailPresenter implements DetailMvp.Presenter {
     private WeakReference<DetailMvp.View> detailView;
-    private final DetailModelInteractor modelInteractor;
+    private final DetailModelInteractor modelInteractor; // Acknowledged: This doesn't do anything at the moment.
 
     public DetailPresenter(@NonNull DetailMvp.View detailView) {
         this.detailView = new WeakReference<>(detailView);
