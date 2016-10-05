@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -27,7 +26,6 @@ public class DetailViewPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup collection, final int position) {
-        // TODO: Figure out how to pass the position in from the recyclerview onclick
         LayoutInflater inflater = LayoutInflater.from(collection.getContext());
         ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.pager_fullscreen_photo, collection, false);
         collection.addView(layout);
@@ -35,7 +33,6 @@ public class DetailViewPagerAdapter extends PagerAdapter {
         final RssItem.Photo photo = photosList.get(position);
 
         ImageView fullscreenImageview = (ImageView) layout.findViewById(R.id.fullscreenImageView);
-        TextView textView = (TextView) layout.findViewById(R.id.fullscreenTextView);
 
         Picasso.with(fullscreenImageview.getContext())
                 .load(photo.getImageLink())
@@ -44,8 +41,6 @@ public class DetailViewPagerAdapter extends PagerAdapter {
                 .placeholder(R.drawable.logo_boston_globe)
                 .error(R.drawable.logo_boston_globe)
                 .into(fullscreenImageview);
-
-        textView.setText(photo.getDescription());
 
         return layout;
     }
