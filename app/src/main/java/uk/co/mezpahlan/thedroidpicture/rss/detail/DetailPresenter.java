@@ -40,5 +40,7 @@ public class DetailPresenter implements DetailMvp.Presenter {
     @Override
     public void onConfigurationChanged(DetailMvp.View view) {
         detailView = new WeakReference<>(view);
+        detailView.get().showLoading(false);
+        detailView.get().showContent();
     }
 }
