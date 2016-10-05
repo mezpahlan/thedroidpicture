@@ -8,7 +8,7 @@ import java.util.List;
 import uk.co.mezpahlan.thedroidpicture.data.model.RssItem;
 
 /**
- * Created by mpahlan on 28/07/16.
+ * Presenter for RSSItem.
  */
 public class ItemPresenter implements ItemMvp.Presenter {
     private WeakReference<ItemMvp.View> itemView;
