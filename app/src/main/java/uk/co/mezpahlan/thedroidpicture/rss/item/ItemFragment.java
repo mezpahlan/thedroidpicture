@@ -2,29 +2,16 @@ package uk.co.mezpahlan.thedroidpicture.rss.item;
 
 import android.app.Fragment;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import org.parceler.Parcels;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -187,105 +174,7 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
         }
     };
 
-    DetailLongClickListener detailLongClickListener = new DetailLongClickListener() {
-        @Override
-        public void onDetailLongClick(int position, View view) {
-            if (actionMode != null) {
-                return;
-            }
-
-            actionMode = getActivity().startActionMode(actionModeCallback);
-            selectedDetailPosition = position;
-            selectedView = view;
-        }
-    };
-
-    ActionMode.Callback actionModeCallback = new ActionMode.Callback() {
-
-        // Called when the action mode is created; startActionMode() was called
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            // Inflate a menu resource providing context menu items
-            MenuInflater inflater = mode.getMenuInflater();
-            inflater.inflate(R.menu.context_menu, menu);
-
-            return true;
-        }
-
-        // Called each time the action mode is shown. Always called after onCreateActionMode, but
-        // may be called multiple times if the mode is invalidated.
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return false; // Return false if nothing is done
-        }
-
-        // Called when the user selects a contextual menu item
-        @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.menu_share:
-                    // TODO: extract URI from here in a method
-                    shareImageAndText(selectedDetailPosition, selectedView);
-                    mode.finish(); // Action picked, so close the CAB
-                    return true;
-                default:
-                    return false;
-            }
-        }
-
-        // Called when the user exits the action mode
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-            actionMode = null;
-            selectedView = null;
-            selectedDetailPosition = -1;
-        }
-    };
-
-    private void shareImageAndText(int selectedDetailPosition, View selectedView) {
-        Bitmap bitmap = getBitmapFromImageView((ImageView) selectedView);
-        File tempFile = saveTempImage(bitmap);
-        Uri contentUri = FileProvider.getUriForFile(getActivity(), "uk.co.mezpahlan.thedroidpicture.fileprovider", tempFile);
-
-        if (contentUri != null) {
-            Intent shareIntent = new Intent();
-            shareIntent.setAction(Intent.ACTION_SEND);
-            RssItem.Photo photo = photosList.get(selectedDetailPosition);
-            shareIntent.putExtra(Intent.EXTRA_TEXT, photo.getDescription());
-            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // temp permission for receiving app to read this file
-            shareIntent.setType("image/*");
-            shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
-            startActivity(Intent.createChooser(shareIntent, "Choose an app"));
-        }
-    }
-
-    @Nullable
-    private File saveTempImage(Bitmap bmp) {
-        File cachePath = new File(getActivity().getCacheDir(), "images");
-        // TODO: We don't use the output of this method. Investigate.
-        cachePath.mkdirs();
-
-        try {
-            // Overwrites this image every time
-            FileOutputStream stream = new FileOutputStream(cachePath + "/image.png");
-            bmp.compress(Bitmap.CompressFormat.PNG, 90, stream);
-            stream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return new File(cachePath, "image.png");
-    }
-
-    private Bitmap getBitmapFromImageView(ImageView imageView) {
-        Drawable drawable = imageView.getDrawable();
-        return  ((BitmapDrawable)drawable).getBitmap();
-    }
-
     public interface PhotoClickListener {
         void onItemClick(int position);
-    }
-
-    public interface DetailLongClickListener {
-        void onDetailLongClick(int position, View v);
     }
 }

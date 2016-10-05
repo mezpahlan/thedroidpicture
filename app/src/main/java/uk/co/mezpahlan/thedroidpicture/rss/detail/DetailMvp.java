@@ -14,6 +14,7 @@ public interface DetailMvp {
     interface View extends BaseMvp.LCEView<List<RssItem.Photo>> {
         void onSelectSharePicture(int currentPosition);
         void onSelectSharePictureAndText(int currentPosition);
+        void sharePictureAndText(int currentPosition);
         void onSelectSetAsWallpaper(int currentPosition);
     }
 
@@ -23,7 +24,7 @@ public interface DetailMvp {
         void load();
         void onLoadSuccess();
         void onLoadError();
-        void onSelectPhoto(@NonNull int position);
+        void selectSharePictureAndText(@NonNull int position);
         void onConfigurationChanged(DetailMvp.View view);
     }
 

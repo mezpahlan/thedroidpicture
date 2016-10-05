@@ -33,8 +33,8 @@ public class DetailPresenter implements DetailMvp.Presenter {
     }
 
     @Override
-    public void onSelectPhoto(int position) {
-        // TODO: Implement me
+    public void selectSharePictureAndText(@NonNull int position) {
+        detailView.get().sharePictureAndText(position);
     }
 
     @Override

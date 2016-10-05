@@ -1,16 +1,28 @@
 package uk.co.mezpahlan.thedroidpicture.rss.detail;
 
 import android.app.Fragment;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+
 import org.parceler.Parcels;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -160,11 +172,72 @@ public class DetailFragment extends Fragment implements DetailMvp.View {
 
     @Override
     public void onSelectSharePictureAndText(int currentPosition) {
-        Toast.makeText(getActivity(), "Selected to share both the picture and the text at postition: " + currentPosition, Toast.LENGTH_SHORT).show();
+        presenter.selectSharePictureAndText(currentPosition);
     }
 
     @Override
     public void onSelectSetAsWallpaper(int currentPosition) {
         Toast.makeText(getActivity(), "Selected to set as wallpaper at postition: " + currentPosition, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void sharePictureAndText(int currentPosition) {
+        final RssItem.Photo photo = photosList.get(currentPosition);
+
+        final Target saveFileTarget = new Target() {
+            @Override
+            public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+                saveTempImage(bitmap);
+                Uri contentUri = getTempImageUri();
+                sharePictureAndTextIntent(contentUri, photo.getDescription());
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+            }
+        };
+        contentView.findViewById(R.id.fullscreen_image_view).setTag(saveFileTarget);
+
+        Picasso.with(getActivity())
+                .load(photo.getImageLink())
+                .into(saveFileTarget);
+    }
+
+    private void sharePictureAndTextIntent(Uri contentUri, String text) {
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, text);
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // temp permission for receiving app to read this file
+        shareIntent.setType("image/*");
+        shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
+        startActivity(Intent.createChooser(shareIntent, "Choose an app"));
+    }
+
+    private Uri getTempImageUri() {
+        File imagePath = new File(getActivity().getCacheDir(), "images");
+        File tempFile = new File(imagePath, "image.png");
+        return FileProvider.getUriForFile(getActivity(), "uk.co.mezpahlan.thedroidpicture.fileprovider", tempFile);
+    }
+
+    @Nullable
+    private void saveTempImage(Bitmap bmp) {
+        File cachePath = new File(getActivity().getCacheDir(), "images");
+        // TODO: We don't use the output of this method. Investigate.
+        cachePath.mkdirs();
+
+        try {
+            // Overwrites this image every time
+            FileOutputStream stream = new FileOutputStream(cachePath + "/image.png");
+            bmp.compress(Bitmap.CompressFormat.PNG, 90, stream);
+            stream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
