@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import org.parceler.Parcels;
 
@@ -20,7 +21,7 @@ import uk.co.mezpahlan.thedroidpicture.rss.feed.FeedMvp;
 import uk.co.mezpahlan.thedroidpicture.rss.item.ItemMvp;
 
 /**
- * Fragment for RssItemDetail. Part of the MVP View layer.
+ * Fragment for RssItemDetail. Part of the MVP View layer. Also responsible for FAB click events.
  */
 public class DetailFragment extends Fragment implements DetailMvp.View {
 
@@ -31,6 +32,7 @@ public class DetailFragment extends Fragment implements DetailMvp.View {
     private DetailViewPagerAdapter pagerAdapter;
     private ViewPager contentView;
     private View loadingView;
+    private View fab;
     private StateMaintainer stateMaintainer;
     private DetailPresenter presenter;
     private List<RssItem.Photo> photosList = new ArrayList<>(0);
@@ -70,6 +72,15 @@ public class DetailFragment extends Fragment implements DetailMvp.View {
         pagerAdapter = new DetailViewPagerAdapter(photosList);
         contentView.setAdapter(pagerAdapter);
         contentView.setCurrentItem(startPosition);
+
+        // Set up the FAB
+        fab = root.findViewById(R.id.fab_view);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onSelectSharePictureAndText(contentView.getCurrentItem());
+            }
+        });
 
         return root;
     }
@@ -140,5 +151,20 @@ public class DetailFragment extends Fragment implements DetailMvp.View {
         photosList.addAll(itemPhotos);
         pagerAdapter.notifyDataSetChanged();
         contentView.setCurrentItem(startPosition);
+    }
+
+    @Override
+    public void onSelectSharePicture(int currentPosition) {
+        Toast.makeText(getActivity(), "Selected to share only the picture at postition: " + currentPosition, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onSelectSharePictureAndText(int currentPosition) {
+        Toast.makeText(getActivity(), "Selected to share both the picture and the text at postition: " + currentPosition, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onSelectSetAsWallpaper(int currentPosition) {
+        Toast.makeText(getActivity(), "Selected to set as wallpaper at postition: " + currentPosition, Toast.LENGTH_SHORT).show();
     }
 }
