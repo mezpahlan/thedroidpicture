@@ -34,6 +34,8 @@ dependencies {
         exclude group: 'stax', module: 'stax'
     }
     compile 'org.jsoup:jsoup:1.9.2'
+    compile 'org.parceler:parceler-api:1.1.5'
+    annotationProcessor 'org.parceler:parceler:1.1.5'
     
     testCompile 'junit:junit:4.12'
 }
