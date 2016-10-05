@@ -12,7 +12,6 @@ import uk.co.mezpahlan.thedroidpicture.data.model.RssItem;
  */
 public interface DetailMvp {
     interface View extends BaseMvp.LCEView<List<RssItem.Photo>> {
-        void setTitle(String title);
     }
 
     interface Presenter {

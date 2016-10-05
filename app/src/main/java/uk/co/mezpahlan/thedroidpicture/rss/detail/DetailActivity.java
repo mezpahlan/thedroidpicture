@@ -7,13 +7,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
 import uk.co.mezpahlan.thedroidpicture.R;
 
 /**
  * Activity for RssItemDetail. Sets up the fragment that is received as a result of an
- * intent from RssItem. Also sets up custom Toolbar.
+ * intent from RssItem.
  */
 
 public class DetailActivity extends AppCompatActivity {
@@ -32,9 +31,6 @@ public class DetailActivity extends AppCompatActivity {
         // TODO: Should the default value be -1 so that we can check for some error?
         int position = intent.getIntExtra(EXTRA_DETAIL_POSITION, 0);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
         if (null == savedInstanceState) {
             initFragment(DetailFragment.newInstance(wrappedPhotoList, position));
         }
@@ -47,5 +43,4 @@ public class DetailActivity extends AppCompatActivity {
         transaction.add(R.id.detailContentFrame, itemFragment);
         transaction.commit();
     }
-
 }

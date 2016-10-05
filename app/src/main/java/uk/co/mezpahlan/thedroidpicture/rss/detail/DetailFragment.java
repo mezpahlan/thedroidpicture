@@ -145,10 +145,4 @@ public class DetailFragment extends Fragment implements DetailMvp.View {
         pagerAdapter.notifyDataSetChanged();
         contentView.setCurrentItem(startPosition);
     }
-
-    @Override
-    public void setTitle(String title) {
-        // TODO: What's this??
-        getActivity().setTitle(title);
-    }
 }
