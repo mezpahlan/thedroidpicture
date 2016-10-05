@@ -164,7 +164,6 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
         listAdapter.notifyDataSetChanged();
     }
 
-
     @Override
     public void setTitle(String title) {
         // TODO: What's this??
