@@ -49,7 +49,8 @@ public class FeedPresenter implements FeedMvp.Presenter {
     @Override
     public void onLoadSuccess(@NonNull List<RssFeed.Item> rssList) {
         // TODO: Update everything in the Recyclerview and notify data set changed or ....... something else?
-        rssView.get().showContent(rssList);
+        rssView.get().updateContent(rssList);
+        rssView.get().showContent();
     }
 
     @Override

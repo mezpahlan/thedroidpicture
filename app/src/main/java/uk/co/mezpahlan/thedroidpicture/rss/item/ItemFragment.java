@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.ActionMode;
@@ -21,6 +20,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import org.parceler.Parcels;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -30,6 +31,7 @@ import java.util.List;
 import uk.co.mezpahlan.thedroidpicture.R;
 import uk.co.mezpahlan.thedroidpicture.base.StateMaintainer;
 import uk.co.mezpahlan.thedroidpicture.data.model.RssItem;
+import uk.co.mezpahlan.thedroidpicture.rss.detail.DetailActivity;
 import uk.co.mezpahlan.thedroidpicture.rss.feed.FeedMvp;
 
 /**
@@ -43,10 +45,8 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
 
     private StateMaintainer stateMaintainer;
     private ItemRecyclerViewAdapter listAdapter;
-    private ItemViewPagerAdapter pagerAdapter;
     private ItemMvp.Presenter presenter;
     private List<RssItem.Photo> photosList = new ArrayList<>(0);
-    private ViewPager viewPager;
     private View contentView;
     private View loadingView;
     private ActionMode actionMode;
@@ -84,11 +84,6 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
         recyclerView.setAdapter(listAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-
-        // Set up view pager
-        viewPager = (ViewPager) root.findViewById(R.id.viewpager);
-        pagerAdapter = new ItemViewPagerAdapter(photosList, detailLongClickListener);
-        viewPager.setAdapter(pagerAdapter);
 
         return root;
     }
@@ -147,17 +142,11 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
     public void showLoading(boolean active) {
         loadingView.setVisibility(View.VISIBLE);
         contentView.setVisibility(View.INVISIBLE);
-        viewPager.setVisibility(View.INVISIBLE);
     }
 
     @Override
-    public void showContent(List<RssItem.Photo> itemPhotos) {
+    public void showContent() {
         // FIXME: We have a problem here with retained states. Need to do this properly
-        photosList.clear();
-        photosList.addAll(itemPhotos);
-        listAdapter.setItemList(itemPhotos);
-        listAdapter.notifyDataSetChanged();
-        pagerAdapter.notifyDataSetChanged();
         contentView.setVisibility(View.VISIBLE);
         loadingView.setVisibility(View.GONE);
     }
@@ -167,6 +156,13 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
 
     }
 
+    @Override
+    public void updateContent(List<RssItem.Photo> itemPhotos) {
+        photosList.clear();
+        photosList.addAll(itemPhotos);
+        listAdapter.setItemList(itemPhotos);
+        listAdapter.notifyDataSetChanged();
+    }
 
 
     @Override
@@ -177,9 +173,12 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
 
     @Override
     public void showExpandedPicture(int position) {
-        viewPager.setCurrentItem(position, false);
-        viewPager.setVisibility(View.VISIBLE);
-        contentView.setVisibility(View.GONE);
+        // Naive implementation using an intent to move between activities
+        // TODO: Think about getContext() which is API 23
+        Intent intent = new Intent(getActivity(), DetailActivity.class);
+        intent.putExtra(DetailActivity.EXTRA_DETAIL_PHOTO_LIST, Parcels.wrap(photosList));
+        intent.putExtra(DetailActivity.EXTRA_DETAIL_POSITION, position);
+        startActivity(intent);
     }
 
     // Listener for clicks on items in the RecyclerView.

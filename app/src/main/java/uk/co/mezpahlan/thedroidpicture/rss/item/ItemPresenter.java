@@ -30,7 +30,8 @@ public class ItemPresenter implements ItemMvp.Presenter {
     @Override
     public void onLoadSuccess(@NonNull List<RssItem.Photo> photoList) {
         // TODO: Update everything in the Recyclerview and notify data set changed or ....... something else?
-        itemView.get().showContent(photoList);
+        itemView.get().updateContent(photoList);
+        itemView.get().showContent();
     }
 
     @Override

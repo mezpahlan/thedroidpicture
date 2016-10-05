@@ -7,8 +7,9 @@ public interface BaseMvp {
 
     interface LCEView <VT> {
         void showLoading(boolean active);
-        void showContent(VT viewType);
+        void showContent();
         void showError();
+        void updateContent(VT viewType);
     }
 
     interface Presenter <PT> {

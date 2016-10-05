@@ -122,11 +122,15 @@ public class FeedFragment extends Fragment implements FeedMvp.View {
     }
 
     @Override
-    public void showContent(List<RssFeed.Item> rssItems) {
-        listAdapter.updateItems(rssItems);
-        listAdapter.notifyDataSetChanged();
+    public void showContent() {
         contentView.setVisibility(View.VISIBLE);
         loadingView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void updateContent(List<RssFeed.Item> rssItems) {
+        listAdapter.updateItems(rssItems);
+        listAdapter.notifyDataSetChanged();
     }
 
     @Override
