@@ -47,7 +47,7 @@ public class ItemPresenter implements ItemMvp.Presenter {
     @Override
     public void onConfigurationChanged(ItemMvp.View view, String itemUrl) {
         itemView = new WeakReference<>(view);
-//        itemView.get().showLoading(false);
-//        modelInteractor.fetchCached(itemUrl);
+        itemView.get().showLoading(false);
+        modelInteractor.fetchCached(itemUrl);
     }
 }
