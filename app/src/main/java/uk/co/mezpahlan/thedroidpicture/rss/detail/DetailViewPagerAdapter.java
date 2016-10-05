@@ -32,7 +32,7 @@ public class DetailViewPagerAdapter extends PagerAdapter {
 
         final RssItem.Photo photo = photosList.get(position);
 
-        ImageView fullscreenImageview = (ImageView) layout.findViewById(R.id.fullscreenImageView);
+        ImageView fullscreenImageview = (ImageView) layout.findViewById(R.id.fullscreen_image_view);
 
         Picasso.with(fullscreenImageview.getContext())
                 .load(photo.getImageLink())
