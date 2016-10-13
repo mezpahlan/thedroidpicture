@@ -141,7 +141,6 @@ public class FeedFragment extends Fragment implements FeedMvp.View {
     @Override
     public void showRssItem(String rssItemTitle, String rssItemLink) {
         // Naive implementation using an intent to move between activities
-        // TODO: Think about using an event bus??
         // TODO: Think about getContext() which is API 23
         Intent intent = new Intent(getActivity(), ItemActivity.class);
         intent.putExtra(ItemActivity.EXTRA_ITEM_TITLE, rssItemTitle);
