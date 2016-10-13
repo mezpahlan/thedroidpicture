@@ -10,7 +10,7 @@ import android.support.v7.widget.Toolbar;
 import uk.co.mezpahlan.thedroidpicture.R;
 
 /**
- * Activity for RssFeed. Sets up the fragment and a custom Toolbar.
+ * Activity for Rss.Feed. Sets up the fragment and a custom Toolbar.
  */
 public class FeedActivity extends AppCompatActivity {
 

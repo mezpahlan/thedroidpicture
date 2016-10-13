@@ -11,7 +11,7 @@ import android.support.v7.widget.Toolbar;
 import uk.co.mezpahlan.thedroidpicture.R;
 
 /**
- * Activity for RssItem. Sets up the fragment that is received as a result of an
+ * Activity for Rss.Item. Sets up the fragment that is received as a result of an
  * intent from RssFeed. Also sets up custom Toolbar and handles back button presses.
  */
 public class ItemActivity extends AppCompatActivity {

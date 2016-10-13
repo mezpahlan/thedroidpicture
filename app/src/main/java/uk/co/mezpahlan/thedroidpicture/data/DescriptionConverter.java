@@ -10,7 +10,9 @@ import java.util.regex.Pattern;
 import uk.co.mezpahlan.thedroidpicture.data.model.RssFeed;
 
 /**
- * Created by mpahlan on 21/07/16.
+ * DescriptionConverter scrapes the description of the item and link to the item
+ * from the received description from the RSS feed. We're not currently writing
+ * data back to the server so no need to implement the reverse operation.
  */
 public class DescriptionConverter implements Converter<RssFeed.Description> {
 

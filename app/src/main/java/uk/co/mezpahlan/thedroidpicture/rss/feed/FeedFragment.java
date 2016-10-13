@@ -19,7 +19,7 @@ import uk.co.mezpahlan.thedroidpicture.data.model.RssFeed;
 import uk.co.mezpahlan.thedroidpicture.rss.item.ItemActivity;
 
 /**
- * Created by mpahlan on 24/07/16.
+ * Fragment for Rss.Feed. Part of the View layer. Also responsible for click events in the feed.
  */
 public class FeedFragment extends Fragment implements FeedMvp.View {
     private static final String TAG = "FeedFragment";

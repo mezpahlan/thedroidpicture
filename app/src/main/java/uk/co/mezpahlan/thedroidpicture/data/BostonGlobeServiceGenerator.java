@@ -8,7 +8,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 
 /**
- * Created by mpahlan on 19/07/16.
+ * Retrofit Service Generator for The Boston Globe.
  */
 public class BostonGlobeServiceGenerator {
 

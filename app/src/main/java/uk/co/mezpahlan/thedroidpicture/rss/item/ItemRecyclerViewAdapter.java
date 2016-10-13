@@ -16,7 +16,7 @@ import uk.co.mezpahlan.thedroidpicture.R;
 import uk.co.mezpahlan.thedroidpicture.data.model.RssItem;
 
 /**
- * RecyclerViewAdapter for RssItem.
+ * RecyclerViewAdapter for Rss.Item.
  */
 public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerViewAdapter.ItemViewHolder> {
 

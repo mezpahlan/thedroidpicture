@@ -9,7 +9,9 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 
 /**
- * Created by mary on 02/10/16.
+ * StateMaintainer class. Each MVP triad will get a reference in this StateMaintainer.
+ * No matter how the user changes configuration the newly created View layer will have
+ * access to the previous state via this mechanism.
  */
 public class StateMaintainer {
     private static final String TAG = "StateMaintainer";

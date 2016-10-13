@@ -8,7 +8,7 @@ import uk.co.mezpahlan.thedroidpicture.base.BaseMvp;
 import uk.co.mezpahlan.thedroidpicture.data.model.RssFeed;
 
 /**
- * MVP definitions for RSS Feed.
+ * MVP definitions for RSS.Feed.
  */
 public interface FeedMvp {
     interface View extends BaseMvp.LCEView <List<RssFeed.Item>> {

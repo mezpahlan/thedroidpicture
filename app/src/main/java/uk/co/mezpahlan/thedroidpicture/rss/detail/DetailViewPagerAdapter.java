@@ -14,7 +14,7 @@ import uk.co.mezpahlan.thedroidpicture.R;
 import uk.co.mezpahlan.thedroidpicture.data.model.RssItem;
 
 /**
- * ViewPagerAdapter for RssItemDetail view.
+ * ViewPagerAdapter for Rss.Detail.
  */
 
 public class DetailViewPagerAdapter extends PagerAdapter {

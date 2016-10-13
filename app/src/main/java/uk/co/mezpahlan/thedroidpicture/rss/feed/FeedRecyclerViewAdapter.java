@@ -16,7 +16,7 @@ import uk.co.mezpahlan.thedroidpicture.R;
 import uk.co.mezpahlan.thedroidpicture.data.model.RssFeed;
 
 /**
- * Created by mpahlan on 20/07/16.
+ * RecyclerViewAdapter for Rss.Feed. Also responsible for click events in the bound item.
  */
 public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedRecyclerViewAdapter.FeedViewHolder> {
 

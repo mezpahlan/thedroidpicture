@@ -7,7 +7,7 @@ import retrofit2.http.Url;
 import uk.co.mezpahlan.thedroidpicture.data.model.RssFeed;
 
 /**
- * Created by mpahlan on 19/07/16.
+ * Retrofit client for The Boston Globe
  */
 public interface BostonGlobeClient {
 

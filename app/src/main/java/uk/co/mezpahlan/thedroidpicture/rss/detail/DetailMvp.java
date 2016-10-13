@@ -8,7 +8,7 @@ import uk.co.mezpahlan.thedroidpicture.base.BaseMvp;
 import uk.co.mezpahlan.thedroidpicture.data.model.RssItem;
 
 /**
- * Interface operations for Rss Item Detail.
+ * Interface operations for Rss.Detail.
  */
 public interface DetailMvp {
     interface View extends BaseMvp.LCEView<List<RssItem.Photo>> {

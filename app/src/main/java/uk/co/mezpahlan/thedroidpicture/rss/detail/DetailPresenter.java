@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import java.lang.ref.WeakReference;
 
 /**
- * Presenter for RssItemDetail.
+ * Presenter for Rss.Detail.
  */
 public class DetailPresenter implements DetailMvp.Presenter {
     private WeakReference<DetailMvp.View> detailView;

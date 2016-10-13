@@ -8,7 +8,7 @@ import java.util.List;
 import uk.co.mezpahlan.thedroidpicture.data.model.RssFeed;
 
 /**
- * Created by mpahlan on 23/07/16.
+ * Presenter for RSS.Feed.
  */
 public class FeedPresenter implements FeedMvp.Presenter {
 

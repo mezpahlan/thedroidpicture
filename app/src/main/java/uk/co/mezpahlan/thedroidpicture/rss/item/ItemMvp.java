@@ -8,7 +8,7 @@ import uk.co.mezpahlan.thedroidpicture.base.BaseMvp;
 import uk.co.mezpahlan.thedroidpicture.data.model.RssItem;
 
 /**
- * Created by mpahlan on 27/07/16.
+ * MVP definitions for RSS.Item.
  */
 public interface ItemMvp {
     interface View extends BaseMvp.LCEView<List<RssItem.Photo>> {

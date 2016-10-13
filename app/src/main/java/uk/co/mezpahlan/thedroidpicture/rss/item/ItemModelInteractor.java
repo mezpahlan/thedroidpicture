@@ -19,7 +19,7 @@ import uk.co.mezpahlan.thedroidpicture.data.BostonGlobeServiceGenerator;
 import uk.co.mezpahlan.thedroidpicture.data.model.RssItem;
 
 /**
- * Created by mpahlan on 28/07/16.
+ * ModelInteractor for Rss.Item.
  */
 public class ItemModelInteractor implements ItemMvp.ModelInteractor {
     private ItemMvp.Presenter itemPresenter;

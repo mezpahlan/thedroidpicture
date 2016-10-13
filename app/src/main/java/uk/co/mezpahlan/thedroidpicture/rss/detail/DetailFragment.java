@@ -33,7 +33,7 @@ import uk.co.mezpahlan.thedroidpicture.rss.feed.FeedMvp;
 import uk.co.mezpahlan.thedroidpicture.rss.item.ItemMvp;
 
 /**
- * Fragment for RssItemDetail. Part of the MVP View layer. Also responsible for FAB click events.
+ * Fragment for Rss.Detail. Part of the MVP View layer. Also responsible for FAB click events.
  */
 public class DetailFragment extends Fragment implements DetailMvp.View {
 

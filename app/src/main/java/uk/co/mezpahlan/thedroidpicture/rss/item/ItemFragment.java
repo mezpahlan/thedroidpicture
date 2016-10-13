@@ -22,7 +22,7 @@ import uk.co.mezpahlan.thedroidpicture.rss.detail.DetailActivity;
 import uk.co.mezpahlan.thedroidpicture.rss.feed.FeedMvp;
 
 /**
- * Fragment for RssItem. Part of the MVP View layer.
+ * Fragment for Rss.Item. Part of the MVP View layer.
  */
 public class ItemFragment extends Fragment implements ItemMvp.View {
 

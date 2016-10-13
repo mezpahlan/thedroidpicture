@@ -1,7 +1,7 @@
 package uk.co.mezpahlan.thedroidpicture.rss.detail;
 
 /**
- * ModelInteractor for RssItemDetail.
+ * ModelInteractor for Rss.Detail.
  */
 public class DetailModelInteractor implements DetailMvp.ModelInteractor {
 

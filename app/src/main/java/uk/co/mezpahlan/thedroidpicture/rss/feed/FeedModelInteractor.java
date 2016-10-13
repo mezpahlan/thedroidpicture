@@ -12,7 +12,7 @@ import uk.co.mezpahlan.thedroidpicture.data.BostonGlobeServiceGenerator;
 import uk.co.mezpahlan.thedroidpicture.data.model.RssFeed;
 
 /**
- * Created by mpahlan on 24/07/16.
+ * ModelInteractor for Rss.Feed.
  */
 public class FeedModelInteractor implements FeedMvp.ModelInteractor {
     private static final String TAG = "FeedModelInteractor";

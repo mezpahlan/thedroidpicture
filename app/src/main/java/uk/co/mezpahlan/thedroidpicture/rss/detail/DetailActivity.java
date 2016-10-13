@@ -11,7 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import uk.co.mezpahlan.thedroidpicture.R;
 
 /**
- * Activity for RssItemDetail. Sets up the fragment that is received as a result of an
+ * Activity for Rss.Detail. Sets up the fragment that is received as a result of an
  * intent from RssItem.
  */
 
