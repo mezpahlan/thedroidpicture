@@ -2,4 +2,6 @@
 
 A feed reader for the Boston Big Picture website.
 
-![screenshot-feed-phone-nexus5x](screenshot-feed-phone-nexus5x.png) ![screenshot-item-phone-nexus5x](screenshot-item-phone-nexus5x.png) ![screenshot-detail-phone-nexus5x](screenshot-detail-phone-nexus5x.png)
+<img src="screenshot-feed-phone-nexus5x.png" width="400" />
+<img src="screenshot-item-phone-nexus5x.png" width="400"  />
+<img src="screenshot-detail-phone-nexus5x.png" width="400" />
