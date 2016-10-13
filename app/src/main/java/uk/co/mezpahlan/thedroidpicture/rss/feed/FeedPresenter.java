@@ -22,16 +22,15 @@ public class FeedPresenter implements FeedMvp.Presenter {
     }
 
     @Override
-    public void load(boolean isUserDriven) {
-        // TODO: Do we check for retained instances here?
-        rssView.get().showLoading(isUserDriven);
+    public void load() {
+        rssView.get().showLoading();
         modelInteractor.fetch();
     }
 
     @Override
     public void onConfigurationChanged(FeedMvp.View view) {
         rssView = new WeakReference<>(view);
-        rssView.get().showLoading(false);
+        rssView.get().showLoading();
         modelInteractor.fetchCached();
     }
 
@@ -48,7 +47,6 @@ public class FeedPresenter implements FeedMvp.Presenter {
 
     @Override
     public void onLoadSuccess(@NonNull List<RssFeed.Item> rssList) {
-        // TODO: Update everything in the Recyclerview and notify data set changed or ....... something else?
         rssView.get().updateContent(rssList);
         rssView.get().showContent();
     }

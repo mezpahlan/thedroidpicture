@@ -6,14 +6,14 @@ package uk.co.mezpahlan.thedroidpicture.base;
 public interface BaseMvp {
 
     interface LCEView <VT> {
-        void showLoading(boolean active);
+        void showLoading();
         void showContent();
         void showError();
         void updateContent(VT viewType);
     }
 
     interface Presenter <PT> {
-        void load(boolean isUserDrive);
+        void load();
         void onLoadSuccess(PT presenterType);
         void onLoadError();
         void onDestroy(boolean isConfigChanging);

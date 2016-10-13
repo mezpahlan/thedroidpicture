@@ -21,15 +21,12 @@ public class ItemPresenter implements ItemMvp.Presenter {
 
     @Override
     public void load(String itemUrl) {
-        // TODO: Do we check for retained instances here?
-        // TODO: Refactor showLoading remove boolean??
-        itemView.get().showLoading(true);
+        itemView.get().showLoading();
         modelInteractor.fetch(itemUrl);
     }
 
     @Override
     public void onLoadSuccess(@NonNull List<RssItem.Photo> photoList) {
-        // TODO: Update everything in the Recyclerview and notify data set changed or ....... something else?
         itemView.get().updateContent(photoList);
         itemView.get().showContent();
     }
@@ -47,7 +44,7 @@ public class ItemPresenter implements ItemMvp.Presenter {
     @Override
     public void onConfigurationChanged(ItemMvp.View view, String itemUrl) {
         itemView = new WeakReference<>(view);
-        itemView.get().showLoading(false);
+        itemView.get().showLoading();
         modelInteractor.fetchCached(itemUrl);
     }
 }

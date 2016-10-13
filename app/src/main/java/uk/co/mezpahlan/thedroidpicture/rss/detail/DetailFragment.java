@@ -141,7 +141,7 @@ public class DetailFragment extends Fragment implements DetailMvp.View {
     }
 
     @Override
-    public void showLoading(boolean active) {
+    public void showLoading() {
         loadingView.setVisibility(View.VISIBLE);
         contentView.setVisibility(View.INVISIBLE);
     }

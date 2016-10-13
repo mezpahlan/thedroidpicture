@@ -126,7 +126,7 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
     }
 
     @Override
-    public void showLoading(boolean active) {
+    public void showLoading() {
         loadingView.setVisibility(View.VISIBLE);
         contentView.setVisibility(View.INVISIBLE);
     }
