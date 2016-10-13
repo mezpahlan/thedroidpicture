@@ -28,6 +28,7 @@ public class FeedFragment extends Fragment implements FeedMvp.View {
     private FeedRecyclerViewAdapter listAdapter;
     private FeedMvp.Presenter presenter;
 
+    private SwipeRefreshLayout swipeRefreshLayout;
     private View loadingView;
     private View contentView;
 
@@ -49,7 +50,7 @@ public class FeedFragment extends Fragment implements FeedMvp.View {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         // Pull-to-refresh
-        SwipeRefreshLayout swipeRefreshLayout =
+        swipeRefreshLayout =
                 (SwipeRefreshLayout) root.findViewById(R.id.content_view);
         swipeRefreshLayout.setColorSchemeColors(
                 ContextCompat.getColor(getActivity(), R.color.colorPrimary),
@@ -131,6 +132,7 @@ public class FeedFragment extends Fragment implements FeedMvp.View {
     public void updateContent(List<RssFeed.Item> rssItems) {
         listAdapter.updateItems(rssItems);
         listAdapter.notifyDataSetChanged();
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override

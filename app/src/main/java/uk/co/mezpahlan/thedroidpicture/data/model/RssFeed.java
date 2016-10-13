@@ -1,5 +1,7 @@
 package uk.co.mezpahlan.thedroidpicture.data.model;
 
+import com.google.common.base.Objects;
+
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
@@ -25,6 +27,20 @@ public class RssFeed {
     public Double getVersion() {return this.version;}
     public void setVersion(Double value) {this.version = value;}
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RssFeed)) return false;
+        RssFeed rssFeed = (RssFeed) o;
+        return Objects.equal(channel, rssFeed.channel) &&
+                Objects.equal(version, rssFeed.version);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(channel, version);
+    }
+
     public static class Image {
 
         @Element(name="link", required=false)
@@ -45,6 +61,20 @@ public class RssFeed {
         public String getUrl() {return this.url;}
         public void setUrl(String value) {this.url = value;}
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Image)) return false;
+            Image image = (Image) o;
+            return Objects.equal(link, image.link) &&
+                    Objects.equal(title, image.title) &&
+                    Objects.equal(url, image.url);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(link, title, url);
+        }
     }
 
     public static class Item {
@@ -86,6 +116,23 @@ public class RssFeed {
         public String getPubDate() {return this.pubDate;}
         public void setPubDate(String value) {this.pubDate = value;}
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Item)) return false;
+            Item item = (Item) o;
+            return Objects.equal(link, item.link) &&
+                    Objects.equal(description, item.description) &&
+                    Objects.equal(guid, item.guid) &&
+                    Objects.equal(categories, item.categories) &&
+                    Objects.equal(title, item.title) &&
+                    Objects.equal(pubDate, item.pubDate);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(link, description, guid, categories, title, pubDate);
+        }
     }
 
     public static class Channel {
@@ -132,6 +179,24 @@ public class RssFeed {
         public String getTitle() {return this.title;}
         public void setTitle(String value) {this.title = value;}
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Channel)) return false;
+            Channel channel = (Channel) o;
+            return Objects.equal(image, channel.image) &&
+                    Objects.equal(copyright, channel.copyright) &&
+                    Objects.equal(item, channel.item) &&
+                    Objects.equal(description, channel.description) &&
+                    Objects.equal(generator, channel.generator) &&
+                    Objects.equal(language, channel.language) &&
+                    Objects.equal(title, channel.title);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(image, copyright, item, description, generator, language, title);
+        }
     }
 
     public static class Description {
@@ -149,6 +214,19 @@ public class RssFeed {
 
         public String getDescriptionLink() {return descriptionLink;}
         public void setDescriptionLink(String descriptionLink) {this.descriptionLink = descriptionLink;}
-    }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Description)) return false;
+            Description that = (Description) o;
+            return Objects.equal(descriptionText, that.descriptionText) &&
+                    Objects.equal(descriptionLink, that.descriptionLink);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(descriptionText, descriptionLink);
+        }
+    }
 }
