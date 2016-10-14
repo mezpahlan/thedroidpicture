@@ -31,6 +31,7 @@ public class FeedFragment extends Fragment implements FeedMvp.View {
     private SwipeRefreshLayout swipeRefreshLayout;
     private View loadingView;
     private View contentView;
+    private View errorView;
 
     public static FeedFragment newInstance() {
         return new FeedFragment();
@@ -71,6 +72,7 @@ public class FeedFragment extends Fragment implements FeedMvp.View {
         super.onViewCreated(view, savedInstanceState);
         loadingView = view.findViewById(R.id.loadingView);
         contentView = view.findViewById(R.id.content_view);
+        errorView = view.findViewById(R.id.error_view);
     }
 
     @Override
@@ -120,12 +122,14 @@ public class FeedFragment extends Fragment implements FeedMvp.View {
     public void showLoading() {
         loadingView.setVisibility(View.VISIBLE);
         contentView.setVisibility(View.INVISIBLE);
+        errorView.setVisibility(View.GONE);
     }
 
     @Override
     public void showContent() {
         contentView.setVisibility(View.VISIBLE);
         loadingView.setVisibility(View.GONE);
+        errorView.setVisibility(View.GONE);
     }
 
     @Override
@@ -137,7 +141,9 @@ public class FeedFragment extends Fragment implements FeedMvp.View {
 
     @Override
     public void showError() {
-
+        errorView.setVisibility(View.VISIBLE);
+        loadingView.setVisibility(View.GONE);
+        contentView.setVisibility(View.GONE);
     }
 
     @Override

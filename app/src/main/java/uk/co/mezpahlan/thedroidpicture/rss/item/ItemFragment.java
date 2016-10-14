@@ -34,8 +34,11 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
     private ItemRecyclerViewAdapter listAdapter;
     private ItemMvp.Presenter presenter;
     private List<RssItem.Photo> photosList = new ArrayList<>(0);
+
     private View contentView;
     private View loadingView;
+    private View errorView;
+
     private ActionMode actionMode;
     private int selectedDetailPosition;
     private View selectedView;
@@ -80,6 +83,7 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
         super.onViewCreated(view, savedInstanceState);
         loadingView = view.findViewById(R.id.loadingView);
         contentView = view.findViewById(R.id.content_view);
+        errorView = view.findViewById(R.id.error_view);
     }
 
     @Override
@@ -129,18 +133,21 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
     public void showLoading() {
         loadingView.setVisibility(View.VISIBLE);
         contentView.setVisibility(View.INVISIBLE);
+        errorView.setVisibility(View.GONE);
     }
 
     @Override
     public void showContent() {
-        // FIXME: We have a problem here with retained states. Need to do this properly
         contentView.setVisibility(View.VISIBLE);
         loadingView.setVisibility(View.GONE);
+        errorView.setVisibility(View.GONE);
     }
 
     @Override
     public void showError() {
-
+        errorView.setVisibility(View.VISIBLE);
+        loadingView.setVisibility(View.GONE);
+        contentView.setVisibility(View.GONE);
     }
 
     @Override

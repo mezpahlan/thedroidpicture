@@ -42,9 +42,12 @@ public class DetailFragment extends Fragment implements DetailMvp.View {
     private static final String TAG = "DetailFragment";
 
     private DetailViewPagerAdapter pagerAdapter;
-    private ViewPager contentView;
+
     private View loadingView;
-    private View fab;
+    private ViewPager contentView;
+    private View errorView;
+    private View fabView;
+
     private StateMaintainer stateMaintainer;
     private DetailPresenter presenter;
     private List<RssItem.Photo> photosList = new ArrayList<>(0);
@@ -86,8 +89,8 @@ public class DetailFragment extends Fragment implements DetailMvp.View {
         contentView.setCurrentItem(startPosition);
 
         // Set up the FAB
-        fab = root.findViewById(R.id.fab_view);
-        fab.setOnClickListener(new View.OnClickListener() {
+        fabView = root.findViewById(R.id.fab_view);
+        fabView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onSelectSharePictureAndText(contentView.getCurrentItem());
@@ -95,6 +98,14 @@ public class DetailFragment extends Fragment implements DetailMvp.View {
         });
 
         return root;
+    }
+
+    @Override
+    public void onViewCreated (View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        loadingView = view.findViewById(R.id.loadingView);
+        errorView = view.findViewById(R.id.error_view);
+        fabView = view.findViewById(R.id.fab_view);
     }
 
     @Override
@@ -144,17 +155,24 @@ public class DetailFragment extends Fragment implements DetailMvp.View {
     public void showLoading() {
         loadingView.setVisibility(View.VISIBLE);
         contentView.setVisibility(View.INVISIBLE);
+        fabView.setVisibility(View.INVISIBLE);
+        errorView.setVisibility(View.GONE);
     }
 
     @Override
     public void showContent() {
         contentView.setVisibility(View.VISIBLE);
+        fabView.setVisibility(View.VISIBLE);
         loadingView.setVisibility(View.GONE);
+        errorView.setVisibility(View.GONE);
     }
 
     @Override
     public void showError() {
-
+        errorView.setVisibility(View.VISIBLE);
+        contentView.setVisibility(View.GONE);
+        loadingView.setVisibility(View.GONE);
+        fabView.setVisibility(View.GONE);
     }
 
     @Override

@@ -67,8 +67,7 @@ public class FeedModelInteractor implements FeedMvp.ModelInteractor {
 
     @Override
     public void onError() {
-        // TODO: Implement me
-        Log.e(TAG, "Something went wrong in the FeedModelInteractor");
+        feedPresenter.onLoadError();
     }
 
     @Override

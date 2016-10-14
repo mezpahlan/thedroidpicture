@@ -75,8 +75,7 @@ public class ItemModelInteractor implements ItemMvp.ModelInteractor {
 
     @Override
     public void onError() {
-        // TODO: Implement me
-        Log.e("Mez", "Something went wrong in the ItemModelInteractor");
+        itemPresenter.onLoadError();
     }
 
     private RssItem convertHtmlToRssItem(ResponseBody body) throws IOException {

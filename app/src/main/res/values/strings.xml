@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">The Droid Picture</string>
+    <string name="error_text">Something went wrong..... oops.</string>
+    <string name="the_droid_picture_logo_content_description">The Droid Picture logo</string>
 </resources>
