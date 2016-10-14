@@ -20,9 +20,12 @@ import uk.co.mezpahlan.thedroidpicture.data.model.RssFeed;
  */
 public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedRecyclerViewAdapter.FeedViewHolder> {
 
+    private static final String ACTION_COLLAPSE = "ACTION_COLLAPSE";
+    private static final String ACTION_TOGGLE = "ACTION_TOGGLE";
+
     private List<RssFeed.Item> itemList = new ArrayList<>(0);
     private FeedFragment.RssFeedItemClickListener rssFeedItemClickListener;
-    private int expandedDescriptionPosition = -1;
+    private int currentExpandedDescriptionPosition = -1;
 
     public void updateItems(List<RssFeed.Item> itemList) {
         // Remove any items from list1 that aren't in list 2
@@ -42,11 +45,29 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedRecyclerVi
     }
 
     @Override
-    public void onBindViewHolder(FeedViewHolder holder, int position) {
-        // TODO: Blink is not caused by Picasso reloading.
-        // TODO: Look at clicking on title vs clicking on description to collapse.
-        // TODO: One causes blink the other doesn't....
+    public void onBindViewHolder(FeedViewHolder holder, int position, List<Object> payloads) {
+        if (payloads.isEmpty()) {
+            super.onBindViewHolder(holder, position, payloads);
+        } else {
+            TextView descriptionView = holder.getDescription();
+            final String action = (String) payloads.get(0);
+            if (action == ACTION_COLLAPSE) {
+                descriptionView.setVisibility(View.GONE);
+                return;
+            }
+            if (action == ACTION_TOGGLE) {
+                if (descriptionView.getVisibility() == View.VISIBLE) {
+                    descriptionView.setVisibility(View.GONE);
+                    currentExpandedDescriptionPosition = -1;
+                } else {
+                    descriptionView.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+    }
 
+    @Override
+    public void onBindViewHolder(FeedViewHolder holder, int position) {
         final TextView titleView = holder.getTitle();
         final ImageView imageView = holder.getImage();
         final TextView descriptionView = holder.getDescription();
@@ -68,14 +89,6 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedRecyclerVi
                 .placeholder(R.drawable.logo_boston_globe)
                 .error(R.drawable.logo_boston_globe)
                 .into(imageView);
-
-        if (position != expandedDescriptionPosition) {
-            descriptionView.setVisibility(View.GONE);
-        } else {
-            // TODO: Rethink comment
-            // Partial update. Only update the description to be visible
-            descriptionView.setVisibility(View.VISIBLE);
-        }
     }
 
     @Override
@@ -92,6 +105,7 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedRecyclerVi
     }
 
     public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
         private FeedFragment.RssFeedItemClickListener rssFeedItemClickListener;
         private TextView title;
         private ImageView image;
@@ -113,32 +127,25 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedRecyclerVi
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-                case R.id.rss_description:
-                    // Nothing is exapnded
-                    // TODO
-                    expandedDescriptionPosition = -1;
-                    notifyItemChanged(getLayoutPosition(), true);
-                    break;
-                case R.id.rss_title:
-                    if (expandedDescriptionPosition >= 0) {
-                        // Store the previously expanded item
-                        int prev = expandedDescriptionPosition;
-                        notifyItemChanged(prev);
-                    }
-
-                    if (expandedDescriptionPosition == getLayoutPosition()) {
-                        expandedDescriptionPosition = -1;
-                        notifyItemChanged(getLayoutPosition());
-                    } else {
-                        // Always expand the item we have clicked on
-                        expandedDescriptionPosition = getLayoutPosition();
-                        notifyItemChanged(expandedDescriptionPosition);
-                    }
-                    break;
                 case R.id.rss_image:
-                    int position = getLayoutPosition();
+                    // Tell the presenter that we want to do something with the supplied item
+                    int position = getAdapterPosition();
                     RssFeed.Item rssFeedItem = getRssFeedItemWithPosition(position);
                     rssFeedItemClickListener.onRssFeedItemClick(rssFeedItem);
+                    break;
+                case R.id.rss_title:
+                    // Collapse the previously expanded item description
+                    if (currentExpandedDescriptionPosition != -1 && currentExpandedDescriptionPosition != getAdapterPosition()) {
+                        notifyItemChanged(currentExpandedDescriptionPosition, ACTION_COLLAPSE);
+                    }
+                    // Toggle the  current item description
+                    notifyItemChanged(getAdapterPosition(), ACTION_TOGGLE);
+                    currentExpandedDescriptionPosition = getAdapterPosition();
+                    break;
+                case R.id.rss_description:
+                    // The description is GONE on creation therefore if we have reached here we must have
+                    // previously made this visible by clicking the title. Make it disappear.
+                    notifyItemChanged(getAdapterPosition(), ACTION_COLLAPSE);
                     break;
             }
         }
