@@ -46,10 +46,10 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedRecyclerVi
 
     @Override
     public void onBindViewHolder(FeedViewHolder holder, int position, List<Object> payloads) {
+        TextView descriptionView = holder.getDescription();
         if (payloads.isEmpty()) {
             super.onBindViewHolder(holder, position, payloads);
         } else {
-            TextView descriptionView = holder.getDescription();
             final String action = (String) payloads.get(0);
             if (action == ACTION_COLLAPSE) {
                 descriptionView.setVisibility(View.GONE);
@@ -81,7 +81,6 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedRecyclerVi
         titleView.setText(title);
         descriptionView.setText(description);
 
-        // Full update
         Picasso.with(imageView.getContext())
                 .load(url)
                 .fit()
@@ -89,6 +88,12 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedRecyclerVi
                 .placeholder(R.drawable.logo_boston_globe)
                 .error(R.drawable.logo_boston_globe)
                 .into(imageView);
+
+        if (position != currentExpandedDescriptionPosition) {
+            descriptionView.setVisibility(View.GONE);
+        } else {
+            descriptionView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -129,23 +134,23 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedRecyclerVi
             switch (v.getId()) {
                 case R.id.rss_image:
                     // Tell the presenter that we want to do something with the supplied item
-                    int position = getAdapterPosition();
+                    int position = getLayoutPosition();
                     RssFeed.Item rssFeedItem = getRssFeedItemWithPosition(position);
                     rssFeedItemClickListener.onRssFeedItemClick(rssFeedItem);
                     break;
                 case R.id.rss_title:
                     // Collapse the previously expanded item description
-                    if (currentExpandedDescriptionPosition != -1 && currentExpandedDescriptionPosition != getAdapterPosition()) {
+                    if (currentExpandedDescriptionPosition != -1 && currentExpandedDescriptionPosition != getLayoutPosition()) {
                         notifyItemChanged(currentExpandedDescriptionPosition, ACTION_COLLAPSE);
                     }
                     // Toggle the  current item description
-                    notifyItemChanged(getAdapterPosition(), ACTION_TOGGLE);
-                    currentExpandedDescriptionPosition = getAdapterPosition();
+                    notifyItemChanged(getLayoutPosition(), ACTION_TOGGLE);
+                    currentExpandedDescriptionPosition = getLayoutPosition();
                     break;
                 case R.id.rss_description:
                     // The description is GONE on creation therefore if we have reached here we must have
                     // previously made this visible by clicking the title. Make it disappear.
-                    notifyItemChanged(getAdapterPosition(), ACTION_COLLAPSE);
+                    notifyItemChanged(getLayoutPosition(), ACTION_COLLAPSE);
                     break;
             }
         }
