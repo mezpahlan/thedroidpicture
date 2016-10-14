@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +48,9 @@ public class FeedFragment extends Fragment implements FeedMvp.View {
         recyclerView.setAdapter(listAdapter);
 
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        final StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(determineNumberOfColumns(), StaggeredGridLayoutManager.VERTICAL);
+        staggeredGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
+        recyclerView.setLayoutManager(staggeredGridLayoutManager);
 
         // Pull-to-refresh
         swipeRefreshLayout =
@@ -67,8 +69,27 @@ public class FeedFragment extends Fragment implements FeedMvp.View {
         return root;
     }
 
+
+    private int determineNumberOfColumns() {
+        int screenWidthDp = getResources().getConfiguration().screenWidthDp;
+
+        int minColumns = 1;
+
+        // https://material.google.com/layout/responsive-ui.html#responsive-ui-breakpoints
+        if (screenWidthDp > 1024) { return minColumns + 5; }
+        if (screenWidthDp > 960) { return minColumns + 5; }
+        if (screenWidthDp > 840) { return minColumns + 5; }
+        if (screenWidthDp > 720) { return minColumns + 3; }
+        if (screenWidthDp > 600) { return minColumns + 3; }
+        if (screenWidthDp > 480) { return minColumns + 1; }
+        if (screenWidthDp > 400) { return minColumns + 1; }
+        if (screenWidthDp > 360) { return minColumns; }
+
+        return minColumns;
+    }
+
     @Override
-    public void onViewCreated (View view, Bundle savedInstanceState) {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         loadingView = view.findViewById(R.id.loadingView);
         contentView = view.findViewById(R.id.content_view);
