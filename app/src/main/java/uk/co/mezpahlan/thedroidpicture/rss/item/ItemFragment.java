@@ -72,10 +72,31 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
         listAdapter = new ItemRecyclerViewAdapter(photoClickListener);
         listAdapter.setItemList(photosList);
         recyclerView.setAdapter(listAdapter);
+
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        final StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(determineNumberOfColumns(), StaggeredGridLayoutManager.VERTICAL);
+        staggeredGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
+        recyclerView.setLayoutManager(staggeredGridLayoutManager);
 
         return root;
+    }
+
+    private int determineNumberOfColumns() {
+        int screenWidthDp = getResources().getConfiguration().screenWidthDp;
+
+        int minColumns = 1;
+
+        // https://material.google.com/layout/responsive-ui.html#responsive-ui-breakpoints
+        if (screenWidthDp > 1024) { return minColumns + 5; }
+        if (screenWidthDp > 960) { return minColumns + 5; }
+        if (screenWidthDp > 840) { return minColumns + 5; }
+        if (screenWidthDp > 720) { return minColumns + 3; }
+        if (screenWidthDp > 600) { return minColumns + 3; }
+        if (screenWidthDp > 480) { return minColumns + 1; }
+        if (screenWidthDp > 400) { return minColumns + 1; }
+        if (screenWidthDp > 360) { return minColumns; }
+
+        return minColumns;
     }
 
     @Override
