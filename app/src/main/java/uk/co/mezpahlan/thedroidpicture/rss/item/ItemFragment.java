@@ -38,6 +38,7 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
     private View contentView;
     private View loadingView;
     private View errorView;
+    private View fabView;
 
     private ActionMode actionMode;
     private int selectedDetailPosition;
@@ -77,6 +78,16 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
         final StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(determineNumberOfColumns(), StaggeredGridLayoutManager.VERTICAL);
         staggeredGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
+
+
+        // Set up the FAB
+        fabView = root.findViewById(R.id.fab_view);
+        fabView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onSelectShareItem();
+            }
+        });
 
         return root;
     }
@@ -154,12 +165,14 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
     public void showLoading() {
         loadingView.setVisibility(View.VISIBLE);
         contentView.setVisibility(View.INVISIBLE);
+        fabView.setVisibility(View.INVISIBLE);
         errorView.setVisibility(View.GONE);
     }
 
     @Override
     public void showContent() {
         contentView.setVisibility(View.VISIBLE);
+        fabView.setVisibility(View.VISIBLE);
         loadingView.setVisibility(View.GONE);
         errorView.setVisibility(View.GONE);
     }
@@ -169,6 +182,7 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
         errorView.setVisibility(View.VISIBLE);
         loadingView.setVisibility(View.GONE);
         contentView.setVisibility(View.GONE);
+        fabView.setVisibility(View.GONE);
     }
 
     @Override
@@ -192,6 +206,21 @@ public class ItemFragment extends Fragment implements ItemMvp.View {
         intent.putExtra(DetailActivity.EXTRA_DETAIL_PHOTO_LIST, Parcels.wrap(photosList));
         intent.putExtra(DetailActivity.EXTRA_DETAIL_POSITION, position);
         startActivity(intent);
+    }
+
+    @Override
+    public void onSelectShareItem() {
+        presenter.selectShareItem();
+    }
+
+    @Override
+    public void shareItem() {
+        String shareText = getArguments().getString(ARGUMENT_ITEM_TITLE) + ": " + getArguments().getString(ARGUMENT_ITEM_URL);
+
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
+        startActivity(Intent.createChooser(shareIntent, "Share story using"));
     }
 
     // Listener for clicks on items in the RecyclerView.

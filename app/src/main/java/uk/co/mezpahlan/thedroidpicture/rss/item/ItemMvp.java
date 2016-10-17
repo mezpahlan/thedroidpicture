@@ -15,6 +15,8 @@ public interface ItemMvp {
         void updateContent(List<RssItem.Photo> itemPhotos);
         void setTitle(String title);
         void showExpandedPicture(int position);
+        void onSelectShareItem();
+        void shareItem();
     }
 
     interface Presenter {
@@ -24,6 +26,7 @@ public interface ItemMvp {
         void onLoadSuccess(@NonNull List<RssItem.Photo> photos);
         void onLoadError();
         void onSelectPhoto(@NonNull int position);
+        void selectShareItem();
         void onConfigurationChanged(View view, String itemUrl);
     }
 

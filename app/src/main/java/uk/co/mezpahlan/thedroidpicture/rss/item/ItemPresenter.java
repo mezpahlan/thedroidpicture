@@ -42,6 +42,11 @@ public class ItemPresenter implements ItemMvp.Presenter {
     }
 
     @Override
+    public void selectShareItem() {
+        itemView.get().shareItem();
+    }
+
+    @Override
     public void onConfigurationChanged(ItemMvp.View view, String itemUrl) {
         itemView = new WeakReference<>(view);
         itemView.get().showLoading();
