@@ -86,7 +86,7 @@ public class ItemModelInteractor implements ItemMvp.ModelInteractor {
         String teaseText = doc.select(".subhead").size() > 0 ? doc.select(".subhead").first().ownText() : "";
         String byLine = doc.select(".byname").size() > 0 ? doc.select(".byname").first().ownText() : "";
         List<Element> photoLinks = doc.select("div.photo img");
-        List<Element> captions = doc.select("article.pcaption div.gcaption");
+        List<Element> captions = doc.select("article.pcaption");
 
         // The page markup doesn't have sane groupings for photo links and photo captions
         // Instead they are next to one another so we have to assume adjacent elements are related.
@@ -95,10 +95,13 @@ public class ItemModelInteractor implements ItemMvp.ModelInteractor {
         if (photoLinks.size() == captions.size()) {
             photoList = new ArrayList<>(0);
             for (int i = 0; i < photoLinks.size(); i++) {
-                photoList.add(new RssItem.Photo("https:" + photoLinks.get(i).attr("src"), captions.get(i).ownText()));
+                final Element captionElement = captions.get(i).select("div.gcaption").first();
+                final Element photoElement = photoLinks.get(i);
+                String caption = captionElement != null ? captionElement.ownText() : "Caption not available";
+                String photoLink = "http:" + photoElement.attr("src");
+                photoList.add(new RssItem.Photo(photoLink, caption));
             }
         } else {
-            // TODO: Throw error because we haven't matched links to captions.
             onError();
             return null;
         }
