@@ -12,10 +12,12 @@ import uk.co.mezpahlan.thedroidpicture.data.model.RssItem;
  */
 public interface DetailMvp {
     interface View extends BaseMvp.LCEView<List<RssItem.Photo>> {
-        void onSelectSharePicture(int currentPosition);
+        void onSelectSavePicture(int currentPosition);
+        void savePicture(int currentPosition);
         void onSelectSharePictureAndText(int currentPosition);
         void sharePictureAndText(int currentPosition);
         void onSelectSetAsWallpaper(int currentPosition);
+        void setAsWallpaper(int currentPosition);
     }
 
     interface Presenter {
@@ -25,6 +27,8 @@ public interface DetailMvp {
         void onLoadSuccess();
         void onLoadError();
         void selectSharePictureAndText(@NonNull int position);
+        void selectSavePicture(@NonNull int position);
+        void selectSetAsWallpaper(@NonNull int position);
         void onConfigurationChanged(DetailMvp.View view);
     }
 

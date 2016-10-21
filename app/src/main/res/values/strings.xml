@@ -2,4 +2,7 @@
     <string name="app_name">The Droid Picture</string>
     <string name="error_text">Something went wrong..... oops.</string>
     <string name="the_droid_picture_logo_content_description">The Droid Picture logo</string>
+    <string name="menu_item_wallpaper">Set as wallpaper</string>
+    <string name="menu_item_save">Save image</string>
+    <string name="menu_item_share">Share image</string>
 </resources>

@@ -1,33 +1,46 @@
 package uk.co.mezpahlan.thedroidpicture.rss.detail;
 
 import android.app.Fragment;
+import android.app.WallpaperManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
-import android.support.v4.content.FileProvider;
+import android.provider.MediaStore;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
-
 import org.parceler.Parcels;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.yavski.fabspeeddial.FabSpeedDial;
+import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
+import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
+import okio.BufferedSink;
+import okio.Okio;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import uk.co.mezpahlan.thedroidpicture.R;
+import uk.co.mezpahlan.thedroidpicture.base.FileUtils;
 import uk.co.mezpahlan.thedroidpicture.base.StateMaintainer;
+import uk.co.mezpahlan.thedroidpicture.data.BostonGlobeClient;
 import uk.co.mezpahlan.thedroidpicture.data.model.RssItem;
 import uk.co.mezpahlan.thedroidpicture.rss.feed.FeedMvp;
 import uk.co.mezpahlan.thedroidpicture.rss.item.ItemMvp;
@@ -46,7 +59,7 @@ public class DetailFragment extends Fragment implements DetailMvp.View {
     private View loadingView;
     private ViewPager contentView;
     private View errorView;
-    private View fabView;
+    private FabSpeedDial fabSpeedDial;
 
     private StateMaintainer stateMaintainer;
     private DetailPresenter presenter;
@@ -89,11 +102,24 @@ public class DetailFragment extends Fragment implements DetailMvp.View {
         contentView.setCurrentItem(startPosition);
 
         // Set up the FAB
-        fabView = root.findViewById(R.id.fab_view);
-        fabView.setOnClickListener(new View.OnClickListener() {
+        fabSpeedDial = (FabSpeedDial) root.findViewById(R.id.fab_view);
+        fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter(){
             @Override
-            public void onClick(View v) {
-                onSelectSharePictureAndText(contentView.getCurrentItem());
+            public boolean onMenuItemSelected(MenuItem menuItem) {
+                // Handle item selection
+                switch (menuItem.getItemId()) {
+                    case R.id.action_save:
+                        onSelectSavePicture(contentView.getCurrentItem());
+                        return true;
+                    case R.id.action_share:
+                        onSelectSharePictureAndText(contentView.getCurrentItem());
+                        return true;
+                    case R.id.action_wallpaper:
+                        onSelectSetAsWallpaper(contentView.getCurrentItem());
+                        return true;
+                    default:
+                        return super.onMenuItemSelected(menuItem);
+                }
             }
         });
 
@@ -105,7 +131,7 @@ public class DetailFragment extends Fragment implements DetailMvp.View {
         super.onViewCreated(view, savedInstanceState);
         loadingView = view.findViewById(R.id.loadingView);
         errorView = view.findViewById(R.id.error_view);
-        fabView = view.findViewById(R.id.fab_view);
+        fabSpeedDial = (FabSpeedDial) view.findViewById(R.id.fab_view);
     }
 
     @Override
@@ -155,14 +181,14 @@ public class DetailFragment extends Fragment implements DetailMvp.View {
     public void showLoading() {
         loadingView.setVisibility(View.VISIBLE);
         contentView.setVisibility(View.INVISIBLE);
-        fabView.setVisibility(View.INVISIBLE);
+        fabSpeedDial.setVisibility(View.INVISIBLE);
         errorView.setVisibility(View.GONE);
     }
 
     @Override
     public void showContent() {
         contentView.setVisibility(View.VISIBLE);
-        fabView.setVisibility(View.VISIBLE);
+        fabSpeedDial.setVisibility(View.VISIBLE);
         loadingView.setVisibility(View.GONE);
         errorView.setVisibility(View.GONE);
     }
@@ -172,7 +198,7 @@ public class DetailFragment extends Fragment implements DetailMvp.View {
         errorView.setVisibility(View.VISIBLE);
         contentView.setVisibility(View.GONE);
         loadingView.setVisibility(View.GONE);
-        fabView.setVisibility(View.GONE);
+        fabSpeedDial.setVisibility(View.GONE);
     }
 
     @Override
@@ -184,8 +210,116 @@ public class DetailFragment extends Fragment implements DetailMvp.View {
     }
 
     @Override
-    public void onSelectSharePicture(int currentPosition) {
-        Toast.makeText(getActivity(), "Selected to share only the picture at postition: " + currentPosition, Toast.LENGTH_SHORT).show();
+    public void onSelectSavePicture(int currentPosition) {
+        presenter.selectSavePicture(currentPosition);
+    }
+
+    @Override
+    public void savePicture(int currentPosition) {
+        final RssItem.Photo photo = photosList.get(currentPosition);
+        final String imageLink = photo.getImageLink();
+        final String description = photo.getDescription();
+        final FileUtils fileUtils = new FileUtils(getActivity());
+
+        Subscriber<String> savedPictureSubscriber = new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                // Log error and show error screen
+                showError();
+            }
+
+            @Override
+            public void onNext(String imagePath) {
+                Toast.makeText(getActivity(), "Saved picture: " + imagePath, Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        Observable.just(fileUtils.getImageFile())
+                .subscribeOn(Schedulers.io())
+                .flatMap(new Func1<File, Observable<File>>() {
+                    @Override
+                    public Observable<File> call(File file) {
+                        return downloadFile(file, imageLink);
+                    }
+                })
+                .flatMap(new Func1<File, Observable<Bitmap>>() {
+                    @Override
+                    public Observable<Bitmap> call(File file) {
+                        return Observable.just(BitmapFactory.decodeFile(file.getAbsolutePath()));
+                    }
+                })
+                .flatMap(new Func1<Bitmap, Observable<String>>() {
+                    @Override
+                    public Observable<String> call(Bitmap bitmap) {
+                        return Observable.just(insertImageToGallery(bitmap));
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(savedPictureSubscriber);
+    }
+
+    private String insertImageToGallery(Bitmap file) {
+       return MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), file, null, null);
+    }
+
+    @Override
+    public void onSelectSetAsWallpaper(int currentPosition) {
+        presenter.selectSetAsWallpaper(currentPosition);
+    }
+
+    @Override
+    public void setAsWallpaper(int currentPosition) {
+        final RssItem.Photo photo = photosList.get(currentPosition);
+        final String imageLink = photo.getImageLink();
+        final FileUtils fileUtils = new FileUtils(getActivity());
+
+        Subscriber<Bitmap> bitMapSubscriber = new Subscriber<Bitmap>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                // Log error and show error screen
+                showError();
+            }
+
+            @Override
+            public void onNext(Bitmap bitmap) {
+                WallpaperManager wallpaperManager = WallpaperManager.getInstance(getActivity());
+                try {
+                    wallpaperManager.setBitmap(bitmap);
+                    Toast.makeText(getActivity(), "Set wallpaper successfully!", Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        Observable.just(fileUtils.getTempImageFile())
+                .subscribeOn(Schedulers.io())
+                .flatMap(new Func1<File, Observable<File>>() {
+                    @Override
+                    public Observable<File> call(File file) {
+                        return downloadFile(file, imageLink);
+                    }
+                })
+                .flatMap(new Func1<File, Observable<Bitmap>>() {
+                    @Override
+                    public Observable<Bitmap> call(File file) {
+                        return Observable.just(BitmapFactory.decodeFile(file.getAbsolutePath()));
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(bitMapSubscriber);
     }
 
     @Override
@@ -194,68 +328,93 @@ public class DetailFragment extends Fragment implements DetailMvp.View {
     }
 
     @Override
-    public void onSelectSetAsWallpaper(int currentPosition) {
-        Toast.makeText(getActivity(), "Selected to set as wallpaper at postition: " + currentPosition, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void sharePictureAndText(int currentPosition) {
+    public void sharePictureAndText(final int currentPosition) {
         final RssItem.Photo photo = photosList.get(currentPosition);
+        final String imageLink = photo.getImageLink();
+        final String description = photo.getDescription();
+        final FileUtils fileUtils = new FileUtils(getActivity());
 
-        final Target saveFileTarget = new Target() {
+        Subscriber<Uri> uriSubscriber = new Subscriber<Uri>() {
             @Override
-            public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
-                saveTempImage(bitmap);
-                Uri contentUri = getTempImageUri();
-                sharePictureAndTextIntent(contentUri, photo.getDescription());
-            }
-
-            @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
+            public void onCompleted() {
 
             }
 
             @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
+            public void onError(Throwable e) {
+                // Log error and show error screen
+                showError();
+            }
 
+            @Override
+            public void onNext(Uri uri) {
+                sharePictureAndTextIntent(uri, description);
             }
         };
-        contentView.findViewById(R.id.fullscreen_image_view).setTag(saveFileTarget);
 
-        Picasso.with(getActivity())
-                .load(photo.getImageLink())
-                .into(saveFileTarget);
+        Observable.just(fileUtils.getTempImageFile())
+                .subscribeOn(Schedulers.io())
+                .flatMap(new Func1<File, Observable<File>>() {
+                    @Override
+                    public Observable<File> call(File file) {
+                        return downloadFile(file, imageLink);
+                    }
+                })
+                .flatMap(new Func1<File, Observable<Uri>>() {
+                    @Override
+                    public Observable<Uri> call(File file) {
+                        return getUriFromFile(file);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(uriSubscriber);
+    }
+
+    private Observable<File> downloadFile(final File file, String imageLink) {
+
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://www.bostonglobe.com")
+                .client(new OkHttpClient.Builder().build())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create()).build();
+        BostonGlobeClient bostonGlobeClient = retrofit.create(BostonGlobeClient.class);
+
+
+        return bostonGlobeClient.downloadFile(imageLink)
+                .flatMap(new Func1<Response<ResponseBody>, Observable<File>>() {
+                    @Override
+                    public Observable<File> call(final Response<ResponseBody> responseBodyResponse) {
+                        return Observable.create(new Observable.OnSubscribe<File>() {
+                            @Override
+                            public void call(Subscriber<? super File> subscriber) {
+                                try {
+                                    BufferedSink sink = Okio.buffer(Okio.sink(file));
+
+                                    sink.writeAll(responseBodyResponse.body().source());
+                                    sink.close();
+                                    subscriber.onNext(file);
+                                    subscriber.onCompleted();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    subscriber.onError(e);
+                                }
+                            }
+                        });
+                    }
+                });
+    }
+
+    private Observable<Uri> getUriFromFile(File file) {
+        final FileUtils fileUtils = new FileUtils(getActivity());
+        return Observable.just(fileUtils.getUriForFile(file));
     }
 
     private void sharePictureAndTextIntent(Uri contentUri, String text) {
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
         shareIntent.putExtra(Intent.EXTRA_TEXT, text);
         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // temp permission for receiving app to read this file
         shareIntent.setType("image/*");
-        shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
         startActivity(Intent.createChooser(shareIntent, "Choose an app"));
-    }
-
-    private Uri getTempImageUri() {
-        File imagePath = new File(getActivity().getCacheDir(), "images");
-        File tempFile = new File(imagePath, "image.png");
-        return FileProvider.getUriForFile(getActivity(), "uk.co.mezpahlan.thedroidpicture.fileprovider", tempFile);
-    }
-
-    @Nullable
-    private void saveTempImage(Bitmap bmp) {
-        File cachePath = new File(getActivity().getCacheDir(), "images");
-        // TODO: We don't use the output of this method. Investigate.
-        cachePath.mkdirs();
-
-        try {
-            // Overwrites this image every time
-            FileOutputStream stream = new FileOutputStream(cachePath + "/image.png");
-            bmp.compress(Bitmap.CompressFormat.PNG, 90, stream);
-            stream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

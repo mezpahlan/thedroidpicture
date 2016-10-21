@@ -2,8 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="uk.co.mezpahlan.thedroidpicture">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
 
 
     <application
@@ -24,7 +25,7 @@
         <activity android:name=".rss.item.ItemActivity" />
         <activity android:name=".rss.detail.DetailActivity" />
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name=".base.WorkAroundFileProvider"
             android:authorities="uk.co.mezpahlan.thedroidpicture.fileprovider"
             android:grantUriPermissions="true"
             android:exported="false">

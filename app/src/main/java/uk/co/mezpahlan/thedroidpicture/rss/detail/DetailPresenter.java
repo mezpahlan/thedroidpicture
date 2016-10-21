@@ -38,6 +38,12 @@ public class DetailPresenter implements DetailMvp.Presenter {
     }
 
     @Override
+    public void selectSavePicture(@NonNull int position) { detailView.get().savePicture(position); }
+
+    @Override
+    public void selectSetAsWallpaper(@NonNull int position) { detailView.get().setAsWallpaper(position); }
+
+    @Override
     public void onConfigurationChanged(DetailMvp.View view) {
         detailView = new WeakReference<>(view);
         detailView.get().showLoading();
