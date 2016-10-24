@@ -24,6 +24,7 @@
         </activity>
         <activity android:name=".rss.item.ItemActivity" />
         <activity android:name=".rss.detail.DetailActivity" />
+        <activity android:name=".base.PermissionsActivity" />
         <provider
             android:name=".base.WorkAroundFileProvider"
             android:authorities="uk.co.mezpahlan.thedroidpicture.fileprovider"

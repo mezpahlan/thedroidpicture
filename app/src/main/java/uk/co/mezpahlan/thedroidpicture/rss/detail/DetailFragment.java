@@ -52,6 +52,7 @@ public class DetailFragment extends Fragment implements DetailMvp.View {
 
     public static final String ARGUMENT_DETAIL_PHOTO_LIST = "DETAIL_PHOTO_LIST";
     public static final String ARGUMENT_DETAIL_POSITION = "DETAIL_POSITION";
+    private static final String ARGUMENT_DETAIL_HAS_EXTERNAL_STORAGE_PERMISSION = "DETAIL_HAS_EXTERNAL_STORAGE_PERMISSION";
     private static final String TAG = "DetailFragment";
 
     private DetailViewPagerAdapter pagerAdapter;
@@ -65,12 +66,14 @@ public class DetailFragment extends Fragment implements DetailMvp.View {
     private DetailPresenter presenter;
     private List<RssItem.Photo> photosList = new ArrayList<>(0);
     private int startPosition = -1;
+    private boolean hasExternalStoragePermission;
 
 
-    public static DetailFragment newInstance(Parcelable wrappedPhotoList, int startPosition) {
+    public static DetailFragment newInstance(Parcelable wrappedPhotoList, int startPosition, boolean hasExternalStoragePermission) {
         Bundle arguments = new Bundle();
         arguments.putParcelable(ARGUMENT_DETAIL_PHOTO_LIST, wrappedPhotoList);
         arguments.putInt(ARGUMENT_DETAIL_POSITION, startPosition);
+        arguments.putBoolean(ARGUMENT_DETAIL_HAS_EXTERNAL_STORAGE_PERMISSION, hasExternalStoragePermission);
 
         DetailFragment fragment = new DetailFragment();
         fragment.setArguments(arguments);
@@ -84,6 +87,7 @@ public class DetailFragment extends Fragment implements DetailMvp.View {
 
         List<RssItem.Photo> receivedPhotoList = Parcels.unwrap(getArguments().getParcelable(ARGUMENT_DETAIL_PHOTO_LIST));
         startPosition = getArguments().getInt(ARGUMENT_DETAIL_POSITION);
+        hasExternalStoragePermission = getArguments().getBoolean(ARGUMENT_DETAIL_HAS_EXTERNAL_STORAGE_PERMISSION);
 
         photosList.addAll(receivedPhotoList);
     }
@@ -109,7 +113,11 @@ public class DetailFragment extends Fragment implements DetailMvp.View {
                 // Handle item selection
                 switch (menuItem.getItemId()) {
                     case R.id.action_save:
-                        onSelectSavePicture(contentView.getCurrentItem());
+                        if (hasExternalStoragePermission) {
+                            onSelectSavePicture(contentView.getCurrentItem());
+                        } else {
+                            Toast.makeText(getActivity(), "Missing permissions. Please enable in application settings.", Toast.LENGTH_SHORT).show();
+                        }
                         return true;
                     case R.id.action_share:
                         onSelectSharePictureAndText(contentView.getCurrentItem());

@@ -5,4 +5,12 @@
     <string name="menu_item_wallpaper">Set as wallpaper</string>
     <string name="menu_item_save">Save image</string>
     <string name="menu_item_share">Share image</string>
+    <string name="permissions_title">The Droid Picture Permissions</string>
+    <string name="permissions_educate_in_context">The Droid Picture needs permission to save images to your image gallery on Marshmallow devices and above.
+        Make your selection on the next dialogue.</string>
+    <string name="permissions_make_selection_button">Make selection</string>
+    <string name="permissions_disable_functionality_warning">In order to save pictures to your image gallery, The Droid Picture needs the
+        WRITE_EXTERNAL_STORAGE permission. Grant this permissions in your application settings in order to enable this functionality. You can always re-enable
+        this from your application settings if you choose deny.</string>
+    <string name="permissions_deny">Deny</string>
 </resources>
