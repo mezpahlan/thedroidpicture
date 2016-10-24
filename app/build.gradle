@@ -8,8 +8,8 @@ android {
         applicationId "uk.co.mezpahlan.thedroidpicture"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 4
-        versionName "0.4.0"
+        versionCode 6
+        versionName "0.6.0"
     }
     buildTypes {
         release {
