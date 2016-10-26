@@ -1,6 +1,7 @@
 package uk.co.mezpahlan.thedroidpicture.rss.feed;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,21 +47,28 @@ public class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedRecyclerVi
 
     @Override
     public void onBindViewHolder(FeedViewHolder holder, int position, List<Object> payloads) {
-        TextView descriptionView = holder.getDescription();
+        final TextView titleView = holder.getTitle();
+        final TextView descriptionView = holder.getDescription();
         if (payloads.isEmpty()) {
             super.onBindViewHolder(holder, position, payloads);
         } else {
             final String action = (String) payloads.get(0);
             if (action == ACTION_COLLAPSE) {
                 descriptionView.setVisibility(View.GONE);
+                titleView.setMaxLines(1);
+                titleView.setEllipsize(TextUtils.TruncateAt.END);
                 return;
             }
             if (action == ACTION_TOGGLE) {
                 if (descriptionView.getVisibility() == View.VISIBLE) {
                     descriptionView.setVisibility(View.GONE);
+                    titleView.setMaxLines(1);
+                    titleView.setEllipsize(TextUtils.TruncateAt.END);
                     currentExpandedDescriptionPosition = -1;
                 } else {
                     descriptionView.setVisibility(View.VISIBLE);
+                    titleView.setMaxLines(10);
+                    titleView.setEllipsize(null);
                 }
             }
         }

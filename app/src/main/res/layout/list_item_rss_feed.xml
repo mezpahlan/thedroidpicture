@@ -27,6 +27,8 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:textSize="13sp"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:gravity="center"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
@@ -38,7 +40,7 @@
             card_view:layout_constraintTop_toBottomOf="@+id/rss_image"
             card_view:layout_constraintLeft_toLeftOf="parent"
             card_view:layout_constraintRight_toRightOf="parent"
-            tools:text="Title of the picture" />
+            tools:text="Really long title of the picture so that we can test line wraps" />
 
         <TextView
             android:id="@+id/rss_description"
